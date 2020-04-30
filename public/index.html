@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Quiz</title>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+    <script>
+      /* This makes modules work. https://stackoverflow.com/a/55230179 */
+      window.define = function(name, required, moduleFn) {
+      var require = function() { throw new Error("AMD require not supported!")}
+      var exports = window.define.modules[name] = {}
+      var resolved = [require, exports]
+      for (var i = 2; i < required.length; i++) {
+          var m = window.define.modules[required[i]]
+          if (!m) throw new Error("AMD module `" + required[i] + "` not found!")
+          resolved.push(m)
+        }
+        moduleFn.apply(null, resolved)
+      }
+      window.define.modules = {}
+    </script>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+
+{
+    "short_name": "Quiz",
+    "name": "Quiz",
+    "start_url": ".",
+    "display": "standalone"
+}
