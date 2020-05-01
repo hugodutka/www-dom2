@@ -1,8 +1,9 @@
 import { JSX } from '@/utils/jsx'
+import { Component } from '@/utils/relax'
 
 export const Yo = (
   { someText }:
-  { someText: string } & { html?: any }
+  { someText: string } & Component
 ) => (
   <div>Yo {someText}!</div>
 );
