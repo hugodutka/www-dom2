@@ -8,7 +8,7 @@ export const JSX = {
       // if something else was passed, it was likely a function that will return an HTML element,
       // so try to evaluate it
       try {
-        elem = tag();
+        elem = tag(attrs);
         for (let [key, value] of Object.entries(attrs)) {
           // @ts-ignore
           elem[key] = value;
