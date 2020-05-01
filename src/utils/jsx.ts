@@ -9,7 +9,8 @@ export const JSX = {
       // so try to evaluate it
       try {
         elem = tag(attrs);
-        for (let [key, value] of Object.entries(attrs)) {
+        const htmlAttrs = attrs.hasOwnProperty("html") ? attrs["html"] : {};
+        for (let [key, value] of Object.entries(htmlAttrs)) {
           // @ts-ignore
           elem[key] = value;
         }        
