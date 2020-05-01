@@ -16,7 +16,7 @@
             "@/*": ["./src/*"]
         },
         "lib": ["esnext", "dom"],
-        "esModuleInterop": true,
+        "esModuleInterop": true
     },
     "include": [
         "src/**/*"
