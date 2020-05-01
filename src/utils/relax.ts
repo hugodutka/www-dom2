@@ -19,6 +19,25 @@ export interface Store {
   getState(): State,
 }
 
+export interface PropMap {
+  (state: State, dispatch: Store["dispatch"]): Object
+}
+
+export interface Component {
+  (args?: Object): HTMLElement
+}
+
+export interface Renderer {
+  root: HTMLElement,
+  store: Store,
+  component: Component,
+  dispatch(action: Action): void
+}
+
+export interface RendererGetter {
+  (): Renderer
+}
+
 export class Store implements Store {
   constructor(reducer: Reducer) {
     this.state = reducer(undefined, undefined);
@@ -34,10 +53,6 @@ export class Store implements Store {
   )
 }
 
-export const createStore = (reducer: Reducer): Store => (
-  new Store(reducer)
-)
-
 export const combineReducers = (...reducers: Array<[string, Reducer]>): Reducer => (
   (state: State, action: Action): State => {
     var result = {};
@@ -48,7 +63,7 @@ export const combineReducers = (...reducers: Array<[string, Reducer]>): Reducer 
   }
 )
 
-export const render = (app, root: HTMLElement) => {
+export const render = (app: Component, root: HTMLElement) => {
   const newChild = app();
   while (root.hasChildNodes()) {
     root.removeChild(root.firstChild);
@@ -56,4 +71,23 @@ export const render = (app, root: HTMLElement) => {
   root.appendChild(newChild);
 }
 
-export default { Store, createStore, render };
+export class Renderer implements Renderer {
+  constructor(root: HTMLElement, store: Store, component: Component) {
+    this.root = root;
+    this.store = store;
+    this.component = component;
+  }
+
+  dispatch = (action: Action): void => {
+    this.store.dispatch(action);
+    render(this.component, this.root);
+  }
+}
+
+export const connect = (
+  renderer: RendererGetter, propMap: PropMap, component: Component
+): Component => (
+  () => component(propMap(renderer().store.getState(), renderer().store.dispatch))
+) 
+
+export default { Store, Renderer };

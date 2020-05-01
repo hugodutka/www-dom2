@@ -1,5 +1,6 @@
 export const JSX = {
   createElement: function (tag, attrs = {}, ...children) {
+    attrs = attrs || {};
     var elem: HTMLElement;
     if (typeof(tag) === "string") {
       // if an HTML tag was passed, simply create a matching element
