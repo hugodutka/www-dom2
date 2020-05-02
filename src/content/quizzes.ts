@@ -6,7 +6,7 @@ export default [
   },
   {
     id: "liczby-pierwsze",
-    title: "Liczy pierwsze",
+    title: "Liczby pierwsze",
     description: "Sprawdź się z matematyki!"
   },
 ]
