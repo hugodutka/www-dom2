@@ -14,5 +14,20 @@ body {
 #root {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.app {
+  background-color: white;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,.125)
+}
+
+.quiz-choices > * + * {
+  margin-top: 1rem;
 }

@@ -1,12 +1,9 @@
 import { JSX } from '@/utils/jsx'
-import { Yo } from '@/containers/Yo'
-import { Timer } from '@/components/Timer'
+import QuizPicker from '@/containers/Quiz/Picker'
 
 export const App = () => (
-  <div className="well-hello">
-    <b>cześć!</b>
-    <Yo/>
-    <Timer start={Date.now()}/>
+  <div className="app">
+    <QuizPicker/>
   </div>
 )
 

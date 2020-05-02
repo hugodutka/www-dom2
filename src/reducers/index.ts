@@ -1,8 +1,8 @@
-import { yo } from '@/reducers/yo'
+import { quiz } from '@/reducers/quiz'
 import { combineReducers } from '@/utils/relax';
 
 export const rootReducer = combineReducers(
-  ["yo", yo]
+  ["quiz", quiz]
 );
 
 export default { rootReducer };
