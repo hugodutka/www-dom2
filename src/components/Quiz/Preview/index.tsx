@@ -2,8 +2,8 @@ import { JSX } from '@/utils/jsx'
 import { Component } from '@/utils/relax'
 
 export const QuizPreview: Component = (
-  { quiz: { title = "", description = "" }, scores, start, cancel }
-: { quiz: { title: string, description: string }, scores: any, start(): void, cancel(): void}
+  { quiz: { title = "", description = "" }, scores = [], start = () => {}, cancel = () => {}}:
+  { quiz: { title: string, description: string }, scores: any, start(): void, cancel(): void}
 ): HTMLElement => (
   <div className="quiz-preview">
     <h3>
