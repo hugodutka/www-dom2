@@ -2,23 +2,18 @@ import { JSX } from '@/utils/jsx'
 
 var nextId = 0;
 
-const getNextId = (): number => (
-  nextId++
-)
-
 export const Timer = ({start}: {start: number}) => {
-  const id = getNextId();
-  const fullId = `timer-${id}`;
+  const id = `timer-${nextId++}`;
   const setTime = () => {
-    const timer = document.getElementById(fullId);
+    const timer = document.getElementById(id);
     if (!timer) return;
     timer.innerHTML = (Math.floor((Date.now() - start) / 1000)).toString();
     window.requestAnimationFrame(setTime);
   };
   return (
-    <span className="timer" id={fullId} refresh={setTime}>
+    <span className="timer" id={id} refresh={setTime}>
       <script>
-        document.getElementById("{fullId}").refresh();
+        document.getElementById("{id}").refresh();
       </script>
     </span>
   );
