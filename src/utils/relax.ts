@@ -79,6 +79,7 @@ export class Renderer implements Renderer {
   }
 
   dispatch = (action: Action): void => {
+    console.log(action);
     this.store.dispatch(action);
     render(this.component, this.root);
   }
@@ -87,7 +88,7 @@ export class Renderer implements Renderer {
 export const connect = (
   renderer: RendererGetter, propMap: PropMap, component: Component
 ): Component => (
-  () => component(propMap(renderer().store.getState(), renderer().store.dispatch))
+  () => component(propMap(renderer().store.getState(), renderer().dispatch))
 ) 
 
 export default { Store, Renderer };
