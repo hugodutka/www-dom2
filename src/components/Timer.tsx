@@ -1,7 +1,13 @@
 import { JSX } from '@/utils/jsx'
 
+var nextId = 0;
+
+const getNextId = (): number => (
+  nextId++
+)
+
 export const Timer = ({start}: {start: number}) => {
-  const id = Math.floor(Math.random() * 10 ** 9);
+  const id = getNextId();
   const fullId = `timer-${id}`;
   const setTime = () => {
     const timer = document.getElementById(fullId);
