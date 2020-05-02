@@ -6,12 +6,8 @@ export const QuizPreview: Component = (
   { quiz: { title: string, description: string }, scores: any, start(): void, cancel(): void}
 ): HTMLElement => (
   <div className="quiz-preview">
-    <h3>
-    <span className="text-secondary">Quiz: </span>{title}
-    </h3>
-    <h6>
-      <span className="text-secondary">Opis: </span>{description}
-    </h6>
+    <h3><span className="text-secondary">Quiz: </span>{title}</h3>
+    <h5><span className="text-secondary">{description}</span></h5>
     <br/>
     <div className="quiz-preview-btn-container">
       <button className="btn btn-secondary" onmousedown={cancel}>Powrót</button>
