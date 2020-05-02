@@ -21,13 +21,35 @@ body {
 }
 
 .app {
+  --margin-width: 1rem;
   background-color: white;
-  padding: 1rem;
-  margin: 1rem;
+  padding: var(--margin-width);
+  margin: var(--margin-width);
   border-radius: 5px;
-  border: 1px solid rgba(0,0,0,.125)
+  border: 1px solid rgba(0,0,0,.125);
+  width: calc(100% - 2 * var(--margin-width));
+  max-width: 720px;
 }
 
 .quiz-choices > * + * {
   margin-top: 1rem;
+}
+
+.quiz-preview {
+  width: 100%;
+}
+
+.quiz-preview-btn-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quiz-preview-btn-container > * + * {
+  margin-left: 1rem;
+}
+
+.quiz-preview-btn-container > button {
+  width: 10rem;
 }

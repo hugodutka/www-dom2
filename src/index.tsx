@@ -1,7 +1,7 @@
 import { JSX } from '@/utils/jsx'
 import { Renderer } from '@/utils/relax'
 import { store } from '@/store'
-import { App } from '@/components/App'
+import App from '@/containers/App'
 
 const root = document.getElementById("root");
 const renderer = new Renderer(root, store, () => <App/>);
