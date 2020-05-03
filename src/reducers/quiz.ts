@@ -38,9 +38,10 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
       };
     } case START_QUIZ: {
       const now = Date.now();
+      const quiz = state.quizzes[state.chosenQuiz];
       const userAnswers = {};
       const questionTimes = {};
-      for (const id of Object.keys(state.quizzes[state.chosenQuiz].questions)) {
+      for (const id of Object.keys(quiz.questions)) {
         userAnswers[id] = null;
         questionTimes[id] = 0;
       }
@@ -48,6 +49,7 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         ...state,
         quizStarted: true,
         quizStartedAt: now,
+        chosenQuestion: quiz.questionsOrder[0],
         lastQuestionSwitch: now,
         userAnswers: userAnswers,
         questionTimes: questionTimes,
