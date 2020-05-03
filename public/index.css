@@ -39,17 +39,21 @@ body {
   width: 100%;
 }
 
-.quiz-preview-btn-container {
+.quiz-preview-btn-container, .quiz-question-btn-container, .quiz-question-header {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.quiz-preview-btn-container > * + * {
+.quiz-preview-btn-container > * + *, .quiz-question-btn-container > * + * {
   margin-left: 1rem;
 }
 
 .quiz-preview-btn-container > button {
   width: 10rem;
+}
+
+.quiz-question-btn-container > button {
+  width: 15rem;
 }

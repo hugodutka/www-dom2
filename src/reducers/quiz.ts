@@ -4,6 +4,16 @@ import quizzes from '@/content/quizzes'
 
 const initialState = {
   quizzes: quizzes
+    .map((quiz) => ({
+      ...quiz,
+      questions: quiz.questions.reduce(
+        (acc, question) => {
+          acc[question.id] = question;
+          return acc;
+        }, {}
+      ),
+      questionsOrder: quiz.questions.map(({id}) => id)
+    }))
     .reduce((acc, quiz) => { acc[quiz.id] = quiz; return acc }, {}),
   chosenQuiz: null,
 }
