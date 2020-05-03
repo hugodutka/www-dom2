@@ -52,7 +52,7 @@ export const QuizQuestion = ({
         onmousedown={questionNumber > 1 && previous}>
           Poprzednie pytanie
       </button>
-      <span className="badge badge-light">Czas: <Timer start={startTime}/></span>
+      <span className="badge badge-light">Czas: <Timer start={startTime}/> sek.</span>
       <button
         className={`btn btn-primary ${questionNumber >= numberOfQuestions && "disabled"}`}
         onmousedown={questionNumber < numberOfQuestions && next}>

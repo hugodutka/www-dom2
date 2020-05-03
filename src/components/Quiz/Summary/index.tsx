@@ -28,7 +28,7 @@ export const QuizSummary = ({
           <span className={`badge badge-${correctAnswers[id] ? "success" : "danger"}`}>
             Odpowiedź {correctAnswers[id]
               ? "poprawna"
-              : `błędna; Kara ${questions[id].penalty} sek.`}
+              : `błędna; kara ${questions[id].penalty} sek.`}
           </span>
         </h5>
         <div>{questions[id].question}</div>
