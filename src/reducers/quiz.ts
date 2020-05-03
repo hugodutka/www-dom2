@@ -28,7 +28,25 @@ const initialState = {
   lastQuestionSwitch: null,
   score: null,
   correctAnswers: null,
-  pastScores: {},
+  pastScores: JSON.parse(localStorage.getItem("pastScores") || "{}"),
+}
+
+const saveScore = (state: State, scores: boolean): State => {
+  const newState = {...state};
+  newState.pastScores = {...state.pastScores};
+  if (!newState.pastScores.hasOwnProperty(state.chosenQuiz)) {
+    newState.pastScores[state.chosenQuiz] = [];
+  }
+  newState.pastScores[state.chosenQuiz] = [
+    ...newState.pastScores[state.chosenQuiz],
+    {
+      finishedAt: state.quizFinishedAt,
+      score: state.score,
+      questionTimes: scores ? {...state.questionTimes} : null,
+    }
+  ];
+  localStorage.setItem("pastScores", JSON.stringify(newState.pastScores));
+  return newState;
 }
 
 export const quiz = (state: State = initialState, action: Action = {}): State => {
@@ -96,35 +114,9 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         score,
       };
     } case SAVE_SCORE_NO_STATS_QUIZ: {
-      const newState = {...state};
-      newState.pastScores = {...state.pastScores};
-      if (!newState.pastScores.hasOwnProperty(state.chosenQuiz)) {
-        newState.pastScores[state.chosenQuiz] = [];
-      }
-      newState.pastScores[state.chosenQuiz] = [
-        ...newState.pastScores[state.chosenQuiz],
-        {
-          finishedAt: state.quizFinishedAt,
-          score: state.score,
-          questionTimes: null,
-        }
-      ];
-      return newState;
+      return saveScore(state, false);
     } case SAVE_SCORE_WITH_STATS_QUIZ: {
-      const newState = {...state};
-      newState.pastScores = {...state.pastScores};
-      if (!newState.pastScores.hasOwnProperty(state.chosenQuiz)) {
-        newState.pastScores[state.chosenQuiz] = [];
-      }
-      newState.pastScores[state.chosenQuiz] = [
-        ...newState.pastScores[state.chosenQuiz],
-        {
-          finishedAt: state.quizFinishedAt,
-          score: state.score,
-          questionTimes: {...state.questionTimes},
-        }
-      ];
-      return newState;
+      return saveScore(state, true);
     } case EXIT_QUIZ: {
       return {
         ...state,
