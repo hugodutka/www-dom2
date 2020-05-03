@@ -1,7 +1,8 @@
 import { Action, State } from '@/utils/relax'
-import { CHOOSE_QUIZ, START_QUIZ, FINISH_QUIZ, EXIT_QUIZ, CHOOSE_QUESTION_QUIZ,
+import { CHOOSE_QUIZ, START_QUIZ, FINISH_QUIZ, EXIT_QUIZ, CHOOSE_QUESTION_QUIZ, INPUT_ANSWER_QUIZ,
   SAVE_SCORE_NO_STATS_QUIZ, SAVE_SCORE_WITH_STATS_QUIZ } from '@/actions/quiz'
 import quizzes from '@/content/quizzes'
+import { deepCopyString } from '@/utils/text'
 
 const initialState = {
   quizzes: quizzes
@@ -64,6 +65,13 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         lastQuestionSwitch: now,
         questionTimes,
       };
+    } case INPUT_ANSWER_QUIZ: {
+      const answers = {...state.userAnswers};
+      answers[state.chosenQuestion] = deepCopyString(action.answer);
+      return {
+        ...state,
+        userAnswers: answers,
+      }
     } case FINISH_QUIZ: {
       const now = Date.now();
       const quiz = state.quizzes[state.chosenQuiz];

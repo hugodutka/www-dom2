@@ -23,6 +23,11 @@ export const chooseQuestionQuiz = (id: string) => (
   {type: CHOOSE_QUESTION_QUIZ, id}
 );
 
+export const INPUT_ANSWER_QUIZ = "INPUT_ANSWER_QUIZ";
+export const inputAnswerQuiz = (answer: string) => (
+  {type: INPUT_ANSWER_QUIZ, answer}
+);
+
 export const SAVE_SCORE_NO_STATS_QUIZ = "SAVE_SCORE_NO_STATS_QUIZ";
 export const saveScoreNoStatsQuiz = () => (
   {type: SAVE_SCORE_NO_STATS_QUIZ}

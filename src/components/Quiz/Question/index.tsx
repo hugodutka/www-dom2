@@ -1,5 +1,6 @@
 import { JSX } from '@/utils/jsx'
 import { Timer } from '@/components/Timer'
+import { isPositiveInteger } from '@/utils/text'
 
 export const QuizQuestion = ({
   quiz: { title, description }, question, penalty, questionNumber, numberOfQuestions, userAnswer,
@@ -22,16 +23,23 @@ export const QuizQuestion = ({
     <p>{question}</p>
     <div class="input-group flex-nowrap">
       <input
+        id="question-answer"
         type="text"
         className="form-control"
-        placeholder="Odpowiedź (tylko liczba całkowita)"
+        placeholder="Odpowiedź"
         aria-label="Odpowiedź"
         aria-describedby="addon-wrapping"
         value={userAnswer}
         oninput={typeAnswer}
+        autofocus
       />
     </div>
     <br/>
+    {isPositiveInteger(userAnswer) || userAnswer === "" || userAnswer === null ? "" : (
+      <div className="alert alert-danger" role="alert">
+        Odpowiedź może być tylko liczbą całkowitą!
+      </div>)
+    }
     <div className="text-secondary">Kara za złą odpowiedź: <b>{penalty} sek.</b></div>
     <br/>
     <div className="quiz-question-btn-container">

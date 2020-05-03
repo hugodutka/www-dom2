@@ -21,10 +21,6 @@ export interface Store {
   getState(): State,
 }
 
-export interface PropMap {
-  (state: State, dispatch: Store["dispatch"]): Object
-}
-
 export interface Component {
   (args?: Object): HTMLElement
 }
@@ -33,7 +29,11 @@ export interface Renderer {
   root: HTMLElement,
   store: Store,
   component: Component,
-  dispatch(action: Action): void
+  dispatch(action: Action, noRender?: boolean): void
+}
+
+export interface PropMap {
+  (state: State, dispatch: Renderer["dispatch"]): Object
 }
 
 export interface RendererGetter {
@@ -80,10 +80,12 @@ export class Renderer implements Renderer {
     this.component = component;
   }
 
-  dispatch = (action: Action): void => {
+  dispatch = (action: Action, noRender: boolean = false): void => {
     console.log(action);
     this.store.dispatch(action);
-    render(this.component, this.root);
+    if (!noRender) {
+      render(this.component, this.root);
+    }
   }
 }
 

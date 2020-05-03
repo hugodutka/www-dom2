@@ -1,8 +1,11 @@
 import { QuizQuestion as Component } from "@/components/Quiz/Question"
-import { finishQuiz, exitQuiz, chooseQuestionQuiz, } from '@/actions/quiz'
+import { finishQuiz, exitQuiz, chooseQuestionQuiz, inputAnswerQuiz } from '@/actions/quiz'
 import { connect } from "@/renderer"
 
-const propMap = ({ quiz: { quizzes, chosenQuiz, chosenQuestion, quizStartedAt } }, dispatch) => {
+const propMap = (
+  { quiz: { quizzes, chosenQuiz, chosenQuestion, quizStartedAt, userAnswers } },
+  dispatch
+) => {
   const quiz = quizzes[chosenQuiz];
   const question = quiz.questions[chosenQuestion];
   const questionIndex = quiz.questionsOrder.indexOf(chosenQuestion);
@@ -13,9 +16,9 @@ const propMap = ({ quiz: { quizzes, chosenQuiz, chosenQuestion, quizStartedAt } 
     penalty: question.penalty,
     questionNumber: questionIndex + 1,
     numberOfQuestions,
-    userAnswer: null,
+    userAnswer: userAnswers[chosenQuestion],
     startTime: quizStartedAt,
-    typeAnswer: (e) => { console.log(e) },
+    typeAnswer: (e) => dispatch(inputAnswerQuiz(e.target.value)),
     next: () => dispatch(chooseQuestionQuiz(quiz.questionsOrder[questionIndex + 1])),
     previous: () => dispatch(chooseQuestionQuiz(quiz.questionsOrder[questionIndex - 1])),
     finish: () => dispatch(finishQuiz()),

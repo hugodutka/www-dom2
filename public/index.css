@@ -57,3 +57,7 @@ body {
 .quiz-question-btn-container > button {
   width: 15rem;
 }
+
+#question-answer {
+  transition: none;
+}
