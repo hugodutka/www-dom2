@@ -28,6 +28,7 @@ const initialState = {
   lastQuestionSwitch: null,
   score: null,
   correctAnswers: null,
+  pastScores: {},
 }
 
 export const quiz = (state: State = initialState, action: Action = {}): State => {
@@ -94,6 +95,36 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         correctAnswers,
         score,
       };
+    } case SAVE_SCORE_NO_STATS_QUIZ: {
+      const newState = {...state};
+      newState.pastScores = {...state.pastScores};
+      if (!newState.pastScores.hasOwnProperty(state.chosenQuiz)) {
+        newState.pastScores[state.chosenQuiz] = [];
+      }
+      newState.pastScores[state.chosenQuiz] = [
+        ...newState.pastScores[state.chosenQuiz],
+        {
+          finishedAt: state.quizFinishedAt,
+          score: state.score,
+          questionTimes: null,
+        }
+      ];
+      return newState;
+    } case SAVE_SCORE_WITH_STATS_QUIZ: {
+      const newState = {...state};
+      newState.pastScores = {...state.pastScores};
+      if (!newState.pastScores.hasOwnProperty(state.chosenQuiz)) {
+        newState.pastScores[state.chosenQuiz] = [];
+      }
+      newState.pastScores[state.chosenQuiz] = [
+        ...newState.pastScores[state.chosenQuiz],
+        {
+          finishedAt: state.quizFinishedAt,
+          score: state.score,
+          questionTimes: {...state.questionTimes},
+        }
+      ];
+      return newState;
     } case EXIT_QUIZ: {
       return {
         ...state,
