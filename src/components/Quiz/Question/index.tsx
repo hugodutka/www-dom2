@@ -4,11 +4,12 @@ import { isPositiveInteger } from '@/utils/text'
 
 export const QuizQuestion = ({
   quiz: { title, description }, question, penalty, questionNumber, numberOfQuestions, userAnswer,
-  startTime, typeAnswer, next, previous, finish, exit
+  startTime, allQuestionsAnswered, typeAnswer, next, previous, finish, exit
 }: {
   quiz: { title: string, description: string}, question: string, penalty: number,
   questionNumber: number, numberOfQuestions: number, userAnswer: string | null, startTime: number,
-  typeAnswer(e: Event): void, next(): void, previous(): void, finish(): void, exit(): void
+  allQuestionsAnswered: boolean, typeAnswer(e: Event): void, next(): void, previous(): void,
+  finish(): void, exit(): void
 }) => (
   <div className="quiz-question">
     <div className="quiz-question-header">
@@ -33,11 +34,14 @@ export const QuizQuestion = ({
         oninput={typeAnswer}
         autofocus
       />
+      <script>
+        document.getElementById("question-answer").focus();
+      </script>
     </div>
     <br/>
     {isPositiveInteger(userAnswer) || userAnswer === "" || userAnswer === null ? "" : (
-      <div className="alert alert-danger" role="alert">
-        Odpowiedź może być tylko liczbą całkowitą!
+      <div className="alert alert-warning" role="alert">
+        Poprawna odpowiedź może być tylko liczbą całkowitą.
       </div>)
     }
     <div className="text-secondary">Kara za złą odpowiedź: <b>{penalty} sek.</b></div>
@@ -45,18 +49,26 @@ export const QuizQuestion = ({
     <div className="quiz-question-btn-container">
       <button
         className={`btn btn-primary ${questionNumber <= 1 && "disabled"}`}
-        onmousedown={questionNumber > 1 && previous}
-      >
+        onmousedown={questionNumber > 1 && previous}>
           Poprzednie pytanie
       </button>
       <span className="badge badge-light">Czas: <Timer start={startTime}/></span>
       <button
         className={`btn btn-primary ${questionNumber >= numberOfQuestions && "disabled"}`}
-        onmousedown={questionNumber < numberOfQuestions && next}
-      >
+        onmousedown={questionNumber < numberOfQuestions && next}>
           Następne pytanie
       </button>
     </div>
+    {!allQuestionsAnswered ? "" : (
+      <div>
+        <hr/>
+        <button
+          id="finish-quiz-btn"
+          className="btn btn-success"
+          onmousedown={finish}>
+            Zakończ quiz
+        </button>
+      </div>)}
   </div>
 );
 

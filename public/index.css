@@ -61,3 +61,7 @@ body {
 #question-answer {
   transition: none;
 }
+
+#finish-quiz-btn {
+  width: 100%;
+}

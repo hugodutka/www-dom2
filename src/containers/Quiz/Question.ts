@@ -18,6 +18,8 @@ const propMap = (
     numberOfQuestions,
     userAnswer: userAnswers[chosenQuestion],
     startTime: quizStartedAt,
+    allQuestionsAnswered: Object.values(userAnswers).reduce(
+      (acc, ans) => acc && (ans !== "" && ans !== null), true),
     typeAnswer: (e) => dispatch(inputAnswerQuiz(e.target.value)),
     next: () => dispatch(chooseQuestionQuiz(quiz.questionsOrder[questionIndex + 1])),
     previous: () => dispatch(chooseQuestionQuiz(quiz.questionsOrder[questionIndex - 1])),

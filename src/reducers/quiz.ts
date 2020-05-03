@@ -104,6 +104,8 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         questionTimes: null,
         chosenQuestion: null,
         lastQuestionSwitch: null,
+        score: null,
+        correctAnswers: null,
       };
     } default:
       return state;
