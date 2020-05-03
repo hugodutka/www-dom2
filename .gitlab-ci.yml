@@ -1,0 +1,14 @@
+image:
+  name: node:10.15.1-alpine
+  entrypoint: ["/bin/sh"]
+
+pages:
+  script:
+  - npm install typescript
+  - npm run-script build
+  artifacts:
+    paths:
+    - node_modules
+    - public
+  only:
+  - master
