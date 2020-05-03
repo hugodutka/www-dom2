@@ -33,6 +33,7 @@ export const QuizSummary = ({
         </h5>
         <div>{questions[id].question}</div>
         <div className="text-secondary">Twoja odpowiedź: <b>{userAnswers[id]}</b></div>
+        <div className="text-secondary">Odpowiedź poprawna: <b>{questions[id].answer}</b></div>
         <br/>
       </div>
     ))}
