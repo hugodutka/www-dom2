@@ -1,6 +1,6 @@
 image:
   name: node:10.15.1-alpine
-  entrypoint: ["/bin/sh"]
+  entrypoint: [""]
 
 pages:
   script:
