@@ -1,7 +1,9 @@
 // This module provides state management and rendering utilities. Its name is a pun on React and
 // Redux.
 
-export interface State {}
+export interface State {
+  [x: string]: any
+}
 
 export interface Action {
   type?: string,
