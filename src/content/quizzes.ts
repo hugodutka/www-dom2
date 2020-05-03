@@ -61,4 +61,23 @@ export default [
       },
     ],
   },
+  {
+    id: "potyczki-uniwersyteckie",
+    title: "Potyczki uniwersyteckie",
+    description: "Tylko najlepsi laboranci potrafią rozwiązać ten quiz.",
+    questions: [
+      {
+        id: "1",
+        question: "Na jaką ocenę zasługuje to rozwiązanie?",
+        answer: "5",
+        penalty: 1000,
+      },
+      {
+        id: "2",
+        question: "Jaką ocenę końcową z Aplikacji WWW powinien dostać autor tego rozwiązania?",
+        answer: "5",
+        penalty: 87342372987438,
+      },
+    ],
+  },
 ]
