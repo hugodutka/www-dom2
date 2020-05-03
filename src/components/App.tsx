@@ -2,15 +2,19 @@ import { JSX } from '@/utils/jsx'
 import QuizPreview from '@/containers/Quiz/Preview'
 import QuizPicker from '@/containers/Quiz/Picker'
 import QuizQuestion from '@/containers/Quiz/Question'
+import QuizSummary from '@/containers/Quiz/Summary'
 
 export const App = (
-  { isQuizChosen, isQuizStarted }:
-  { isQuizChosen: boolean, isQuizStarted: boolean }
+  { isQuizChosen, isQuizStarted, isQuizFinished }:
+  { isQuizChosen: boolean, isQuizStarted: boolean, isQuizFinished: boolean }
 ) => (
   <div className="app">{
     isQuizChosen ? (
       isQuizStarted ? (
-        <QuizQuestion/>
+        isQuizFinished ? (
+          <QuizSummary/>
+        ) :
+          <QuizQuestion/>
       ) :
         <QuizPreview/>
     ) :

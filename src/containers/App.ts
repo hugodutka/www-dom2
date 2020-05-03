@@ -1,10 +1,11 @@
 import { App as Component } from "@/components/App"
 import { connect } from "@/renderer"
 
-const propMap = ({ quiz: { chosenQuiz, quizStarted } }, dispatch) => (
+const propMap = ({ quiz: { chosenQuiz, quizStarted, quizFinished } }, dispatch) => (
   {
     isQuizChosen: chosenQuiz !== null,
     isQuizStarted: quizStarted,
+    isQuizFinished: quizFinished,
   }
 );
 
