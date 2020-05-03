@@ -82,7 +82,8 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
       for (const id of Object.keys(quiz.questions)) {
         score += questionTimes[id];
         const correct = state.userAnswers[id] === quiz.questions[id].answer;
-        score += correct ? 0 : quiz.questions[id].penalty;
+        const penalty = correct ? 0 : quiz.questions[id].penalty * 1000;
+        score += penalty;
         correctAnswers[id] = correct;
       }
       return {
