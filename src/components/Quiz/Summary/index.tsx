@@ -1,4 +1,4 @@
-import { JSX } from '@/utils/jsx'
+import { JSX } from '@/utils/relax'
 
 export const QuizSummary = ({
   quiz: { title, description }, score, questions, questionsOrder, userAnswers, correctAnswers,

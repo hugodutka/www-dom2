@@ -1,5 +1,5 @@
 export const JSX = {
-  createElement: function (tag, attrs = {}, ...children) {
+  createElement: (tag, attrs = {}, ...children) => {
     attrs = attrs || {};
     var elem: HTMLElement;
     if (typeof(tag) === "string") {
@@ -9,16 +9,12 @@ export const JSX = {
       // if something else was passed, it was likely a function that will return an HTML element,
       // so try to evaluate it
       try {
-        elem = tag(attrs);
         const htmlAttrs = attrs.hasOwnProperty("html") ? attrs["html"] : {};
-        for (let [key, value] of Object.entries(htmlAttrs)) {
-          // @ts-ignore
-          elem[key] = value;
-        }        
+        elem = Object.assign(tag(attrs), htmlAttrs);
       } catch(err) {
         console.log(err);
         // if it cannot be evaluated, return something so as not to break the application
-        return Object.assign(document.createElement("div"));
+        return document.createElement("div");
       }
     }
     for (const child of children) {

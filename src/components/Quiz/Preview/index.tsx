@@ -1,4 +1,4 @@
-import { JSX } from '@/utils/jsx'
+import { JSX } from '@/utils/relax'
 import { Component } from '@/utils/relax'
 
 export const QuizPreview: Component = (

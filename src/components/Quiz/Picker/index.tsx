@@ -1,4 +1,4 @@
-import { JSX } from '@/utils/jsx'
+import { JSX } from '@/utils/relax'
 import { QuizChoice } from './types'
 
 export const QuizPicker = ({choices}: {choices: Array<QuizChoice>}) => (

@@ -1,25 +1,7 @@
-// This module provides state management and rendering utilities. Its name is a pun on React and
-// Redux.
+// This module is responsible for making it possible for components to get state directly from
+// a relax store.
 
-export interface State {
-  [x: string]: any
-}
-
-export interface Action {
-  type?: string,
-  [x: string]: any
-}
-
-export interface Reducer {
-  (state: State, action: Action): State
-}
-
-export interface Store {
-  state: State,
-  reducer: Reducer,
-  dispatch(action: Action): void,
-  getState(): State,
-}
+import { Action, State, Store } from './store'
 
 export interface Component {
   (args?: Object): HTMLElement
@@ -39,31 +21,6 @@ export interface PropMap {
 export interface RendererGetter {
   (): Renderer
 }
-
-export class Store implements Store {
-  constructor(reducer: Reducer) {
-    this.state = reducer(undefined, undefined);
-    this.reducer = reducer;
-  }
-
-  dispatch = (action: Action) => {
-    this.state = this.reducer(this.state, action);
-  }
-
-  getState = (): State => (
-    this.state
-  )
-}
-
-export const combineReducers = (...reducers: Array<[string, Reducer]>): Reducer => (
-  (state: State, action: Action): State => {
-    var result = {};
-    for (const [name, r] of reducers) {
-      result[name] = r(state && state[name], action);
-    }
-    return result;
-  }
-)
 
 export const render = (app: Component, root: HTMLElement) => {
   const newChild = app();
@@ -94,5 +51,3 @@ export const connect = (
 ): Component => (
   () => component(propMap(renderer().store.getState(), renderer().dispatch))
 ) 
-
-export default { Store, Renderer };

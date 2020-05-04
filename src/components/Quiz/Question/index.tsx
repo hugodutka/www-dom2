@@ -1,4 +1,4 @@
-import { JSX } from '@/utils/jsx'
+import { JSX } from '@/utils/relax'
 import { Timer } from '@/components/Timer'
 import { isPositiveInteger } from '@/utils/text'
 
