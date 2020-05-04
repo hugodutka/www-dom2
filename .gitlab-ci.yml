@@ -6,6 +6,11 @@ pages:
   script:
   - npm install typescript
   - npm run-script build
+  - cd public
+  - mv index.css index-${CI_COMMIT_SHORT_SHA}.css
+  - mv index.js index-${CI_COMMIT_SHORT_SHA}.js
+  - sed -i "s/index.css/index-${CI_COMMIT_SHORT_SHA}.css/" index.html
+  - sed -i "s/index.js/index-${CI_COMMIT_SHORT_SHA}.js/" index.html
   artifacts:
     paths:
     - node_modules
