@@ -1,5 +1,5 @@
 import { App as Component } from "@/components/App"
-import { connect } from "@/renderer"
+import { connect } from "@/connector"
 
 const propMap = ({ quiz: { chosenQuiz, quizStarted, quizFinished } }, dispatch) => (
   {

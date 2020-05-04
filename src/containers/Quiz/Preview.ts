@@ -1,6 +1,6 @@
 import { QuizPreview as Component } from "@/components/Quiz/Preview"
 import { chooseQuiz, startQuiz } from '@/actions/quiz'
-import { connect } from "@/renderer"
+import { connect } from "@/connector"
 
 const propMap = ({ quiz: { quizzes, chosenQuiz, pastScores } }, dispatch) => (
   {

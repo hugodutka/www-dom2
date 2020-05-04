@@ -1,6 +1,6 @@
 import { QuizSummary as Component } from "@/components/Quiz/Summary"
 import { exitQuiz, saveScoreNoStatsQuiz, saveScoreWithStatsQuiz } from '@/actions/quiz'
-import { connect } from "@/renderer"
+import { connect } from "@/connector"
 
 const propMap = (
   { quiz: { quizzes, chosenQuiz, score, userAnswers, correctAnswers } }, dispatch

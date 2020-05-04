@@ -1,6 +1,6 @@
 import { QuizQuestion as Component } from "@/components/Quiz/Question"
 import { finishQuiz, exitQuiz, chooseQuestionQuiz, inputAnswerQuiz } from '@/actions/quiz'
-import { connect } from "@/renderer"
+import { connect } from "@/connector"
 
 const propMap = (
   { quiz: { quizzes, chosenQuiz, chosenQuestion, quizStartedAt, userAnswers } },
