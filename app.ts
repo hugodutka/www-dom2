@@ -1,8 +1,9 @@
 import createError = require("http-errors");
 import express = require("express");
 import cookieParser = require("cookie-parser");
-import indexRouter = require("./routes/index");
-const { newDB, setupDB } = require("./db");
+import { indexRouter } from "./routes/index";
+import { provideDB } from "./middleware";
+import { setupDB, newDB } from "./db";
 
 const app = express();
 
@@ -11,10 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static("./front/public"));
 
-app.use((_req, res, next) => {
-  res.locals.db = newDB();
-  next();
-});
+app.use(provideDB);
 
 app.use("/", indexRouter);
 
@@ -30,9 +28,13 @@ app.use((err, req, res, _next) => {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   const status = err.status || 500;
+  if (status === 500) console.error(err.stack);
   // render the error page
   res.status(status);
-  res.json({ error: status, message: err.message });
+  res.json({
+    error: status,
+    message: status === 500 ? "internal server error" : err.message,
+  });
 });
 
 const port = 3000;

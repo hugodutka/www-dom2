@@ -18,8 +18,11 @@ export const prepareTokens = (user: User): [string, string, number] => {
   const maxAge = 3600;
   const iat = Math.floor(Date.now() / 1000);
   const exp = iat + maxAge;
-  const token = jwt.sign({ userId: user.id, iat, exp }, JWTSecret);
-  const csrf = createHash("sha256").update(token).digest("base64");
+  const token = jwt.sign(
+    { userId: user.id, jwtId: user.jwtId, iat, exp },
+    JWTSecret
+  );
+  const csrf = createHash("sha256").update(token).digest("hex");
   return [token, csrf, maxAge];
 };
 
@@ -28,10 +31,10 @@ export const prepareTokens = (user: User): [string, string, number] => {
 export const verifyTokens = (
   token: string,
   csrf: string
-): [boolean, Object, string] => {
+): [boolean, any, string] => {
   try {
     const contents = jwt.verify(token, JWTSecret);
-    const newCsrf = createHash("sha256").update(token).digest("base64");
+    const newCsrf = createHash("sha256").update(token).digest("hex");
     if (
       csrf.length !== newCsrf.length ||
       !timingSafeEqual(Buffer.from(csrf), Buffer.from(newCsrf))

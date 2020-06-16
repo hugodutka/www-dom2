@@ -1,7 +1,8 @@
 import path = require("path");
 import express = require("express");
 import { handleAsyncErrors } from "../utils";
-import { cmpPassword, prepareTokens, verifyTokens } from "../auth";
+import { authorizeUser } from "../middleware";
+import { cmpPassword, prepareTokens } from "../auth";
 import { User } from "../models/user";
 
 const router = express.Router();
@@ -27,4 +28,25 @@ router.post(
   })
 );
 
-module.exports = router;
+router.post("/logout", (_req, res, _next) => {
+  res.cookie("jwt", "", { expires: new Date(0) });
+  res.cookie("csrf", "", { expires: new Date(0) });
+  return res.json({ ok: true });
+});
+
+router.post(
+  "/changePassword",
+  authorizeUser,
+  handleAsyncErrors(async (req, res, _next) => {
+    if (!req.body.password)
+      throw { status: 400, message: "missing password field" };
+    await res.locals.user.changePassword(res.locals.db, req.body.password);
+    return res.json({ ok: true });
+  })
+);
+
+router.get("/authorized", authorizeUser, (_req, res, _next) => {
+  return res.json({ username: res.locals.user.username });
+});
+
+export const indexRouter = router;

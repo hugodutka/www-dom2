@@ -14,7 +14,8 @@ export const setupDB = async (db) => {
     CREATE TABLE IF NOT EXISTS user (
       id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
       username text NOT NULL UNIQUE,
-      passwordHash text NOT NULL
+      passwordHash text NOT NULL,
+      jwtId integer NOT NULL DEFAULT 0
     );
   `);
   await run(db)(
