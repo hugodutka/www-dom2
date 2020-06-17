@@ -1,7 +1,7 @@
 import express = require("express");
 import { handleAsyncErrors } from "../utils";
 import { authorizeUser } from "../middleware";
-import { cmpPassword, prepareTokens } from "../auth";
+import { cmpPassword } from "../auth";
 import { User } from "../models/user";
 
 const router = express.Router();
@@ -13,16 +13,15 @@ router.post(
     if (user === null || !(await cmpPassword(req.body.password, user.passwordHash))) {
       throw { message: "invalid credentials", status: 401 };
     }
-    const [token, csrf, maxAge] = prepareTokens(user);
-    res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: true });
-    res.cookie("csrf", csrf, { maxAge: maxAge * 1000, httpOnly: false });
-    return res.json({ ok: true });
+    req.session.userId = user.id;
+    req.session.sessionId = user.validSessionId;
+    return res.json({ ok: true, username: user.username });
   })
 );
 
-router.post("/logout", (_req, res, _next) => {
-  res.cookie("jwt", "", { expires: new Date(0) });
-  res.cookie("csrf", "", { expires: new Date(0) });
+router.post("/logout", (req, res, _next) => {
+  req.session.userId = undefined;
+  req.session.sessionId = undefined;
   return res.json({ ok: true });
 });
 

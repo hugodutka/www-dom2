@@ -1,10 +1,12 @@
 import createError = require("http-errors");
 import express = require("express");
 import cookieParser = require("cookie-parser");
-import { indexRouter } from "./routes/index";
+import session = require("express-session");
+import csrf = require("csurf");
 import { authRouter } from "./routes/auth";
 import { quizRouter } from "./routes/quiz";
-import { provideDB } from "./middleware";
+import { provideDB, putCSRFTokenInCookies } from "./middleware";
+import { sessionSecret } from "./config";
 import { setupDB, newDB } from "./db";
 
 const app = express();
@@ -12,13 +14,20 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static("./front/public"));
-
+app.use(csrf({ cookie: true }));
 app.use(provideDB);
-
-app.use("/", indexRouter);
+app.use(putCSRFTokenInCookies);
+app.use(
+  session({
+    secret: sessionSecret,
+    cookie: { maxAge: 60 * 60 * 1000 }, // one hour
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 app.use("/auth", authRouter);
 app.use("/quiz", quizRouter);
+app.use(express.static("./front/public"));
 
 // catch 404 and forward to error handler
 app.use((_req, _res, next) => {

@@ -6,25 +6,25 @@ export class User {
     public id: number,
     public username: string,
     public passwordHash: string,
-    public jwtId: number
+    public validSessionId: number
   ) {}
 
   static async getById(db, id: number): Promise<User | null> {
     const fields = await get(db)("SELECT * FROM user WHERE id = ?;", id);
     if (!fields) return null;
-    return new User(fields.id, fields.username, fields.password, fields.jwtId);
+    return new User(fields.id, fields.username, fields.password, fields.validSessionId);
   }
 
   static async getByUsername(db, username: string): Promise<User | null> {
     const fields = await get(db)("SELECT * FROM user WHERE username = ?;", username);
     if (!fields) return null;
-    return new User(fields.id, fields.username, fields.passwordHash, fields.jwtId);
+    return new User(fields.id, fields.username, fields.passwordHash, fields.validSessionId);
   }
 
   async changePassword(db, password: string): Promise<void> {
     await run(db)("BEGIN TRANSACTION;");
     await run(db)(
-      "UPDATE user SET jwtId = jwtId + 1, passwordHash = ? WHERE id = ?;",
+      "UPDATE user SET validSessionId = validSessionId + 1, passwordHash = ? WHERE id = ?;",
       await hashPassword(password),
       this.id
     );

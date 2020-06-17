@@ -1,1 +1,1 @@
-export const JWTSecret = "insecure, hardcoded secret";
+export const sessionSecret = "insecure, hardcoded secret";

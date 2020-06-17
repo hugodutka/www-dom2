@@ -19,7 +19,7 @@ export const setupDB = async (db) => {
       id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
       username text NOT NULL UNIQUE,
       passwordHash text NOT NULL,
-      jwtId integer NOT NULL DEFAULT 0
+      validSessionId integer NOT NULL DEFAULT 0
     );
   `);
   await run(db)(`
