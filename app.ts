@@ -41,7 +41,7 @@ app.use((err, req, res, _next) => {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   const status = err.status || 500;
-  if (status === 500) console.error(err.stack);
+  if (status === 500) console.trace(err.stack);
   // render the error page
   res.status(status);
   res.json({

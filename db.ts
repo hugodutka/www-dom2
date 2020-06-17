@@ -1,7 +1,7 @@
 const { Database } = require("sqlite3");
 const { promisify } = require("util");
 const { hashPassword } = require("./auth");
-import { quizDefinitions } from "./data/quiz";
+import { userDefinitions, quizDefinitions, answerDefinitions } from "./seed";
 
 export const newDB = () => new Database("db.sqlite");
 export const run = (db) => promisify(db.run.bind(db));
@@ -54,30 +54,41 @@ export const setupDB = async (db) => {
       FOREIGN KEY (questionId) REFERENCES question(id)
     );
   `);
-  for (const [i, { title, description, questions }] of quizDefinitions.entries()) {
-    const quizId = i + 1;
+  for (const { id, title, description, questions } of quizDefinitions) {
+    const quizId = id;
     await run(db)(
       "INSERT INTO quiz (id, title, description) VALUES (?, ?, ?);",
       quizId,
       title,
       description
     );
-    for (const [j, { question, answer, penalty }] of questions.entries()) {
+    for (const { id, question, answer, penalty } of questions) {
       await run(db)(
         `INSERT INTO question (quizId, sequence, question, answer, penalty)
          VALUES (?, ?, ?, ?, ?);`,
         quizId,
-        j,
+        id,
         question,
         answer,
         penalty
       );
     }
   }
-  await run(db)(
-    "INSERT INTO user (username, passwordHash) VALUES (?, ?)",
-    "hugo",
-    await hashPassword("password")
-  );
+  for (const { id, username, password } of userDefinitions) {
+    await run(db)(
+      "INSERT INTO user (id, username, passwordHash) VALUES (?, ?, ?)",
+      id,
+      username,
+      await hashPassword(password)
+    );
+  }
+  for (const { userId, questionId, answer } of answerDefinitions) {
+    await run(db)(
+      "INSERT INTO userAnswer (userId, questionId, answer) VALUES (?, ?, ?)",
+      userId,
+      questionId,
+      answer
+    );
+  }
   await run(db)("COMMIT TRANSACTION;");
 };
