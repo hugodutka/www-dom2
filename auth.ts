@@ -13,7 +13,7 @@ export const cmpPassword = async (
 ): Promise<boolean> => await bcrypt.compare(pass, hash);
 
 // The first returned value is the JWT, the second is the CSRF token. The third is a UNIX timestamp
-// of how long the token are valid for in seconds.
+// of how long the tokens are valid in seconds.
 export const prepareTokens = (user: User): [string, string, number] => {
   const maxAge = 3600;
   const iat = Math.floor(Date.now() / 1000);
