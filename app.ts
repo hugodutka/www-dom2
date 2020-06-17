@@ -3,6 +3,7 @@ import express = require("express");
 import cookieParser = require("cookie-parser");
 import { indexRouter } from "./routes/index";
 import { authRouter } from "./routes/auth";
+import { quizRouter } from "./routes/quiz";
 import { provideDB } from "./middleware";
 import { setupDB, newDB } from "./db";
 
@@ -17,6 +18,7 @@ app.use(provideDB);
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
+app.use("/quiz", quizRouter);
 
 // catch 404 and forward to error handler
 app.use((_req, _res, next) => {
@@ -41,7 +43,12 @@ app.use((err, req, res, _next) => {
 
 const port = 3000;
 app.listen(port, async () => {
-  await setupDB(newDB());
+  try {
+    await setupDB(newDB());
+  } catch (err) {
+    console.trace(err.stack);
+    process.exit(1);
+  }
   console.log(`Server listening at http://localhost:${port}`);
 });
 

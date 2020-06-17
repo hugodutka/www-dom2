@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES5"
+    "target": "ES5",
+    "downlevelIteration": true
   },
   "exclude": ["node_modules", "front"]
 }
