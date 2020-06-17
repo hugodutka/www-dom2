@@ -16,8 +16,7 @@ export const authorizeUser = handleAsyncErrors(async (req, res, next) => {
   const [valid, info, errMsg] = verifyTokens(jwt, csrf);
   if (!valid) throw { status: 401, message: errMsg };
   const user = await User.getById(res.locals.db, info.userId);
-  if (user.jwtId !== info.jwtId)
-    throw { status: 401, message: "you were logged out" };
+  if (user.jwtId !== info.jwtId) throw { status: 401, message: "you were logged out" };
   res.locals.user = user;
   next();
 });
