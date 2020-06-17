@@ -2,6 +2,7 @@ import createError = require("http-errors");
 import express = require("express");
 import cookieParser = require("cookie-parser");
 import { indexRouter } from "./routes/index";
+import { authRouter } from "./routes/auth";
 import { provideDB } from "./middleware";
 import { setupDB, newDB } from "./db";
 
@@ -15,6 +16,7 @@ app.use(express.static("./front/public"));
 app.use(provideDB);
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use((_req, _res, next) => {
