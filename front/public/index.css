@@ -21,13 +21,10 @@ body {
 }
 
 header {
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-
-  min-height: 4rem;
-  max-height: 5rem;
   padding: var(--margin-width);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
   z-index: 1;
@@ -35,6 +32,16 @@ header {
 
 .header-title {
   font-size: 1.5rem;
+}
+
+.header-info {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.header-info > * + * {
+  margin-left: 1rem;
 }
 
 .content {
@@ -69,6 +76,8 @@ header {
 .quiz-preview-btn-container,
 .quiz-question-btn-container,
 .quiz-question-header,
+.change-password-form-header,
+.login-form-btn,
 .quiz-summary-btn-container {
   width: 100%;
   display: flex;
@@ -92,4 +101,8 @@ header {
 
 #question-answer {
   transition: none;
+}
+
+.password-change-form-btn {
+  width: 100%;
 }
