@@ -1,21 +1,50 @@
-import "chai-http";
-import * as chai from "chai";
-chai.use(require("chai-http"));
-const cookie = require("cookie");
+const fetch = require("node-fetch");
+import { assert } from "chai";
 import app from "./app";
-const expect = chai.expect;
 
 const baseUrl = "http://localhost:3000";
-const provideAgent = (f: Function) => async () => await f(chai.request.agent(baseUrl));
+const testUsername = "hugo";
+const testPassword = "password";
 const csrfCookie = "CSRF-Token";
-const csrfHeader = "X-CSRF-TOKEN";
-const getCsrfToken = async (agent) => {
-  const r1 = await agent.get("/");
-  const cookies = cookie.parse(r1.headers["set-cookie"].join("; "));
-  return cookies[csrfCookie];
+
+const fetchAPI = async (path, method = "GET", jar = new Map(), body = {}) => {
+  const options = {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: Array.from(jar.entries())
+        .map(([key, value]) => `${key}=${value}`)
+        .join("; "),
+      "X-CSRF-TOKEN": jar.get(csrfCookie),
+    },
+  };
+  if (method === "GET") {
+    options["data"] = body;
+  } else {
+    options["body"] = JSON.stringify(body);
+  }
+  const r = await fetch(baseUrl + path, options);
+  addCookiesToJar(r, jar);
+  return r;
 };
-const get = (agent, csrfToken) => (...args) => agent.get(...args).set(csrfHeader, csrfToken);
-const post = (agent, csrfToken) => (...args) => agent.post(...args).set(csrfHeader, csrfToken);
+
+const newJar = () => new Map<string, string>();
+
+const addCookiesToJar = (response, jar): void => {
+  const cookieStrs: string[] = response.headers.raw()["set-cookie"];
+  for (const cookieStr of cookieStrs) {
+    const pieces = cookieStr.split(";");
+    const [key, value] = pieces[0].split("=");
+    jar.set(key, value);
+  }
+};
+
+const login = async (jar, username = testUsername, password = testPassword) => {
+  await fetchAPI("/", "GET", jar);
+  const loginRes = await fetchAPI("/auth/login", "POST", jar, { username, password });
+  if (loginRes.status !== 200) throw new Error("login failed");
+  return loginRes;
+};
 
 before((done) => {
   app.on("serverListening", async () => {
@@ -24,104 +53,67 @@ before((done) => {
 });
 
 describe("general", () => {
-  it(
-    "html",
-    provideAgent(async (agent) => {
-      const r = await agent.get("/");
-      expect(r).to.have.status(200);
-      expect(r).to.be.html;
-    })
-  );
+  it("html", async () => {
+    const r = await fetchAPI("/");
+    assert.equal(r.status, 200);
+    assert.isTrue(r.headers.get("content-type").includes("text/html"));
+  });
 
-  it(
-    "csrf-set",
-    provideAgent(async (agent) => {
-      const r = await agent.get("/");
-      expect(r).to.have.cookie(csrfCookie);
-    })
-  );
+  it("csrf-set", async () => {
+    const jar = newJar();
+    await fetchAPI("/", "GET", jar);
+    assert.isTrue(jar.has(csrfCookie));
+  });
 
-  it(
-    "csrf-rejected",
-    provideAgent(async (agent) => {
-      const r = await agent.post("/quiz/list");
-      expect(r).to.have.status(403);
-    })
-  );
+  it("csrf-rejected", async () => {
+    const r = await fetchAPI("/", "POST");
+    assert.equal(r.status, 403);
+  });
 
-  it(
-    "csrf-accepted",
-    provideAgent(async (agent) => {
-      const csrfToken = await getCsrfToken(agent);
-      const r2 = await agent.get("/quiz/list").set(csrfHeader, csrfToken);
-      expect(r2).to.have.status(401);
-    })
-  );
+  it("csrf-accepted", async () => {
+    const jar = newJar();
+    await fetchAPI("/", "GET", jar);
+    const r = await fetchAPI("/", "POST", jar);
+    assert.equal(r.status, 404);
+  });
 });
 
 describe("auth", () => {
-  it(
-    "login",
-    provideAgent(async (agent) => {
-      const csrfToken = await getCsrfToken(agent);
-      const r = await post(
-        agent,
-        csrfToken
-      )("/auth/login").send({ username: "hugo", password: "password" });
-      expect(r).to.have.status(200);
-      const r2 = await get(agent, csrfToken)("/quiz/list").set(csrfHeader, csrfToken);
-      expect(r2).to.have.status(200);
-    })
-  );
+  it("login", async () => {
+    const jar = newJar();
+    await login(jar);
+    const r = await fetchAPI("/quiz/list", "GET", jar);
+    assert.equal(r.status, 200);
+  });
 
-  it(
-    "logout",
-    provideAgent(async (agent) => {
-      const csrfToken = await getCsrfToken(agent);
-      const r = await post(
-        agent,
-        csrfToken
-      )("/auth/login").send({ username: "hugo", password: "password" });
-      expect(r).to.have.status(200);
+  it("logout", async () => {
+    const jar = newJar();
+    await login(jar);
 
-      const r2 = await get(agent, csrfToken)("/quiz/list");
-      expect(r2).to.have.status(200);
+    const r2 = await fetchAPI("/quiz/list", "GET", jar);
+    assert.equal(r2.status, 200);
 
-      const r3 = await post(agent, csrfToken)("/auth/logout");
-      expect(r3).to.have.status(200);
+    const r3 = await fetchAPI("/auth/logout", "POST", jar);
+    assert.equal(r3.status, 200);
 
-      const r4 = await get(agent, csrfToken)("/quiz/list");
-      expect(r4).to.have.status(401);
-    })
-  );
+    const r4 = await fetchAPI("/quiz/list", "GET", jar);
+    assert.equal(r4.status, 401);
+  });
 
-  it(
-    "changePassword",
-    provideAgent(async (agent) => {
-      const csrfToken = await getCsrfToken(agent);
-      const r1 = await post(
-        agent,
-        csrfToken
-      )("/auth/login").send({ username: "hugo", password: "password" });
-      expect(r1).to.have.status(200);
+  it("changePassword", async () => {
+    const jar = newJar();
+    await login(jar);
 
-      const r2 = await get(agent, csrfToken)("/quiz/list");
-      expect(r2).to.have.status(200);
+    const r1 = await fetchAPI("/quiz/list", "GET", jar);
+    assert.equal(r1.status, 200);
 
-      const agent2 = chai.request.agent(baseUrl);
-      const csrfToken2 = await getCsrfToken(agent2);
+    const otherJar = newJar();
+    await login(otherJar);
 
-      const r3 = await post(
-        agent2,
-        csrfToken2
-      )("/auth/login").send({ username: "hugo", password: "password" });
-      expect(r3).to.have.status(200);
+    const r2 = await fetchAPI("/auth/changePassword", "POST", otherJar, { password: "pass" });
+    assert.equal(r2.status, 200);
 
-      const r4 = await post(agent2, csrfToken2)("/auth/changePassword").send({ password: "pass" });
-      expect(r4).to.have.status(200);
-
-      const r5 = await get(agent, csrfToken)("/quiz/list");
-      expect(r5).to.have.status(401);
-    })
-  );
+    const r3 = await fetchAPI("/quiz/list", "GET", jar);
+    assert.equal(r3.status, 401);
+  });
 });
