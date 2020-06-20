@@ -1,12 +1,6 @@
-import { App as Component } from "@/components/App"
-import { connect } from "@/connector"
+import { App as Component } from "@/components/App";
+import { connect } from "@/connector";
 
-const propMap = ({ quiz: { chosenQuiz, quizStarted, quizFinished } }, dispatch) => (
-  {
-    isQuizChosen: chosenQuiz !== null,
-    isQuizStarted: quizStarted,
-    isQuizFinished: quizFinished,
-  }
-);
+const propMap = (_state, _dispatch) => ({});
 
 export default connect(propMap, Component);

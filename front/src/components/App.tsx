@@ -1,25 +1,10 @@
-import { JSX } from '@/utils/relax'
-import QuizPreview from '@/containers/Quiz/Preview'
-import QuizPicker from '@/containers/Quiz/Picker'
-import QuizQuestion from '@/containers/Quiz/Question'
-import QuizSummary from '@/containers/Quiz/Summary'
+import { JSX } from "@/utils/relax";
+import Quiz from "@/containers/Quiz";
 
-export const App = (
-  { isQuizChosen, isQuizStarted, isQuizFinished }:
-  { isQuizChosen: boolean, isQuizStarted: boolean, isQuizFinished: boolean }
-) => (
-  <div className="app">{
-    isQuizChosen ? (
-      isQuizStarted ? (
-        isQuizFinished ? (
-          <QuizSummary/>
-        ) :
-          <QuizQuestion/>
-      ) :
-        <QuizPreview/>
-    ) :
-      <QuizPicker/>
-  }</div>
-)
+export const App = ({}) => (
+  <div className="app">
+    <Quiz />
+  </div>
+);
 
-export default { App }
+export default { App };
