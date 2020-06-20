@@ -4,9 +4,39 @@ const { hashPassword } = require("./auth");
 import { userDefinitions, quizDefinitions, answerDefinitions } from "./seed";
 
 export const newDB = () => new Database("db.sqlite");
-export const run = (db) => promisify(db.run.bind(db));
-export const get = (db) => promisify(db.get.bind(db));
-export const all = (db) => promisify(db.all.bind(db));
+const retry = (f: Function, maxTries: number) => async (...args) => {
+  var tries = 0;
+  while (true) {
+    tries += 1;
+    try {
+      return await f(...args);
+    } catch (err) {
+      if (tries >= maxTries) throw err;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
+};
+export const run = (db) => retry(promisify(db.run.bind(db)), 3);
+export const get = (db) => retry(promisify(db.get.bind(db)), 3);
+export const all = (db) => retry(promisify(db.all.bind(db)), 3);
+export const beginTransaction = async (db, immediate = false) => {
+  if (!db.transactionOpen) {
+    await run(db)(`BEGIN TRANSACTION ${immediate ? "IMMEDIATE" : ""};`);
+  }
+  db.transactionOpen = true;
+};
+export const commitTransaction = async (db) => {
+  if (db.transactionOpen) {
+    await run(db)(`COMMIT;`);
+  }
+  db.transactionOpen = false;
+};
+export const rollbackTransaction = async (db) => {
+  if (db.transactionOpen) {
+    await run(db)(`ROLLBACK;`);
+  }
+  db.transactionOpen = false;
+};
 
 export const setupDB = async (db) => {
   await run(db)("BEGIN TRANSACTION;");

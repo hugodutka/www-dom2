@@ -1,5 +1,5 @@
 import { hashPassword } from "../auth";
-import { get, run } from "../db";
+import { get, run, beginTransaction, commitTransaction } from "../db";
 
 export class User {
   constructor(
@@ -22,12 +22,12 @@ export class User {
   }
 
   async changePassword(db, password: string): Promise<void> {
-    await run(db)("BEGIN TRANSACTION;");
+    await beginTransaction(db);
     await run(db)(
       "UPDATE user SET validSessionId = validSessionId + 1, passwordHash = ? WHERE id = ?;",
       await hashPassword(password),
       this.id
     );
-    await run(db)("COMMIT TRANSACTION;");
+    await commitTransaction(db);
   }
 }

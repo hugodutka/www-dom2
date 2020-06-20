@@ -1,9 +1,21 @@
 import { handleAsyncErrors } from "./utils";
-import { newDB } from "./db";
+import { newDB, rollbackTransaction } from "./db";
 import { User } from "./models/user";
 
 export const provideDB = (_req, res, next) => {
   res.locals.db = newDB();
+  next();
+};
+
+export const cleanUpDB = async (_req, res, next) => {
+  try {
+    if (res.locals.db && res.locals.db.transactionOpen) {
+      await rollbackTransaction(res.locals.db);
+    }
+  } catch (err) {
+    console.error("Ignoring error:");
+    console.error(err);
+  }
   next();
 };
 

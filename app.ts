@@ -5,7 +5,7 @@ import session = require("express-session");
 import csrf = require("csurf");
 import { authRouter } from "./routes/auth";
 import { quizRouter } from "./routes/quiz";
-import { provideDB, putCSRFTokenInCookies } from "./middleware";
+import { provideDB, cleanUpDB, putCSRFTokenInCookies } from "./middleware";
 import { sessionSecret } from "./config";
 import { setupDB, newDB } from "./db";
 
@@ -35,7 +35,7 @@ app.use((_req, _res, next) => {
 });
 
 // error handler
-app.use((err, req, res, _next) => {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -48,7 +48,11 @@ app.use((err, req, res, _next) => {
     error: status,
     message: status === 500 ? "internal server error" : err.message,
   });
+
+  next();
 });
+
+app.use(cleanUpDB);
 
 const port = 3000;
 app.listen(port, async () => {
@@ -59,6 +63,7 @@ app.listen(port, async () => {
     process.exit(1);
   }
   console.log(`Server listening at http://localhost:${port}`);
+  app.emit("serverListening");
 });
 
-module.exports = app;
+export default app;

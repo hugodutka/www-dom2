@@ -1,4 +1,4 @@
-import { get, all } from "../db";
+import { get, all, run } from "../db";
 
 export class Quiz {
   constructor(
@@ -37,6 +37,43 @@ export class Quiz {
       questions.map((q) => new Question(q.id, q.quizId, q.question, q.answer, q.penalty))
     );
   }
+
+  async listAnswers(db, userId: number): Promise<Answer[]> {
+    const answers = await all(db)(
+      `SELECT a.id, a.questionId, a.answer
+       FROM userAnswer AS a
+       JOIN question AS q
+       ON q.id == a.questionId
+       WHERE a.userId = ? AND q.quizId = ?;`,
+      userId,
+      this.id
+    );
+    return answers.map((a) => new Answer(a.id, userId, a.questionId, a.answer));
+  }
+
+  // Must be run inside a transaction.
+  async solve(db, userId: number, answers: Answer[]): Promise<Error | undefined> {
+    const prevAnswers = await this.listAnswers(db, userId);
+    if (prevAnswers.length !== 0) {
+      return new Error("a quiz can only be solved once");
+    }
+    const answeredIds = answers.map((a) => a.questionId).sort();
+    const questionIds = this.questions.map((q) => q.id).sort();
+    if (
+      answeredIds.length !== questionIds.length ||
+      !answeredIds.every((val, i) => val === questionIds[i])
+    ) {
+      return new Error("all questions must be answered exactly once");
+    }
+    for (const a of answers) {
+      await run(db)(
+        "REPLACE INTO userAnswer (userId, questionId, answer) VALUES (?, ?, ?)",
+        a.userId,
+        a.questionId,
+        a.answer
+      );
+    }
+  }
 }
 
 export class Question {
@@ -54,5 +91,25 @@ export class Question {
     question: this.question,
     answer: this.answer,
     penalty: this.penalty,
+  });
+}
+
+export class Answer {
+  constructor(
+    public id: number,
+    public userId: number,
+    public questionId: number,
+    public answer: string
+  ) {
+    if (typeof id != "number") throw new Error("id must be a number");
+    if (typeof userId != "number") throw new Error("userId must be a number");
+    if (typeof questionId != "number") throw new Error("questionId must be a number");
+    if (typeof answer != "string") throw new Error("answer must be a string");
+  }
+
+  toObject = () => ({
+    id: this.id,
+    userId: this.userId,
+    answer: this.answer,
   });
 }

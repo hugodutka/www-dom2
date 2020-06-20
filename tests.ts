@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-import { assert } from "chai";
+import { assert, expect } from "chai";
 import app from "./app";
 
 const baseUrl = "http://localhost:3000";
@@ -39,11 +39,16 @@ const addCookiesToJar = (response, jar): void => {
   }
 };
 
-const login = async (jar, username = testUsername, password = testPassword) => {
+const login = async (jar = newJar(), username = testUsername, password = testPassword) => {
   await fetchAPI("/", "GET", jar);
-  const loginRes = await fetchAPI("/auth/login", "POST", jar, { username, password });
-  if (loginRes.status !== 200) throw new Error("login failed");
-  return loginRes;
+  const response = await fetchAPI("/auth/login", "POST", jar, { username, password });
+  if (response.status !== 200) {
+    console.log(response);
+    const body = await response.json();
+    console.log(body);
+    throw new Error("login failed");
+  }
+  return { jar, response };
 };
 
 before((done) => {
@@ -80,15 +85,13 @@ describe("general", () => {
 
 describe("auth", () => {
   it("login", async () => {
-    const jar = newJar();
-    await login(jar);
+    const { jar } = await login();
     const r = await fetchAPI("/quiz/list", "GET", jar);
     assert.equal(r.status, 200);
   });
 
   it("logout", async () => {
-    const jar = newJar();
-    await login(jar);
+    const { jar } = await login();
 
     const r2 = await fetchAPI("/quiz/list", "GET", jar);
     assert.equal(r2.status, 200);
@@ -101,19 +104,110 @@ describe("auth", () => {
   });
 
   it("changePassword", async () => {
-    const jar = newJar();
-    await login(jar);
+    const { jar } = await login();
 
     const r1 = await fetchAPI("/quiz/list", "GET", jar);
     assert.equal(r1.status, 200);
 
-    const otherJar = newJar();
-    await login(otherJar);
+    const otherJar = await login().then(({ jar }) => jar);
 
-    const r2 = await fetchAPI("/auth/changePassword", "POST", otherJar, { password: "pass" });
+    const r2 = await fetchAPI("/auth/changePassword", "POST", otherJar, { password: testPassword });
     assert.equal(r2.status, 200);
 
     const r3 = await fetchAPI("/quiz/list", "GET", jar);
     assert.equal(r3.status, 401);
+  });
+});
+
+describe("quiz", () => {
+  it("list", async () => {
+    const { jar } = await login();
+    const r = await fetchAPI("/quiz/list", "GET", jar);
+    assert.equal(r.status, 200);
+    assert.isTrue(r.headers.get("content-type").includes("application/json"));
+    const body = await r.json();
+    expect(body).to.have.property("quizzes");
+  });
+
+  it("details", async () => {
+    const { jar } = await login();
+    const r = await fetchAPI("/quiz/1", "GET", jar);
+    assert.equal(r.status, 200);
+    assert.isTrue(r.headers.get("content-type").includes("application/json"));
+    const body = await r.json();
+    expect(body).to.have.property("quiz");
+    expect(body).to.have.property("answers");
+
+    const quiz = body.quiz;
+    expect(quiz).to.have.property("id");
+    expect(quiz).to.have.property("title");
+    expect(quiz).to.have.property("description");
+    expect(quiz).to.have.property("questions");
+  });
+
+  it("solve with not enough answers", async () => {
+    const { jar } = await login();
+    const r = await fetchAPI("/quiz/2/solve", "POST", jar, {
+      answers: [
+        {
+          questionId: 5,
+          answer: "5",
+        },
+      ],
+    });
+    assert.equal(r.status, 400);
+  });
+
+  it("solve", async () => {
+    const { jar } = await login();
+    const r = await fetchAPI("/quiz/2/solve", "POST", jar, {
+      answers: [
+        {
+          questionId: 5,
+          answer: "5",
+        },
+        {
+          questionId: 6,
+          answer: "5",
+        },
+        {
+          questionId: 7,
+          answer: "5",
+        },
+        {
+          questionId: 8,
+          answer: "5",
+        },
+      ],
+    });
+    assert.equal(r.status, 200);
+    const body = await r.json();
+    assert.isTrue(body.ok);
+  });
+
+  it("multiple solves not allowed", async () => {
+    const answers = [
+      {
+        questionId: 1,
+        answer: "5",
+      },
+      {
+        questionId: 2,
+        answer: "5",
+      },
+      {
+        questionId: 3,
+        answer: "5",
+      },
+      {
+        questionId: 4,
+        answer: "5",
+      },
+    ];
+    const { jar } = await login();
+    const r = await fetchAPI("/quiz/1/solve", "POST", jar, { answers });
+    assert.equal(r.status, 200);
+    const r2 = await fetchAPI("/quiz/1/solve", "POST", jar, { answers });
+    assert.equal(r2.status, 400);
   });
 });
