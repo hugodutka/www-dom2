@@ -1,22 +1,20 @@
-import { JSX } from '@/utils/relax'
+import { JSX } from "@/utils/relax";
 
 var nextId = 0;
 
-export const Timer = ({start}: {start: number}) => {
+export const Timer = ({ start }: { start: number }) => {
   const id = `timer-${nextId++}`;
   const setTime = () => {
     const timer = document.getElementById(id);
     if (!timer) return;
-    timer.innerHTML = (Math.floor((Date.now() - start) / 1000)).toString();
+    timer.innerHTML = Math.floor((Date.now() - start) / 1000).toString();
     window.requestAnimationFrame(setTime);
   };
   return (
     <span className="timer" id={id} refresh={setTime}>
-      <script>
-        document.getElementById("{id}").refresh();
-      </script>
+      <script>document.getElementById("{id}").refresh();</script>
     </span>
   );
 };
 
-export default { Timer }
+export default { Timer };

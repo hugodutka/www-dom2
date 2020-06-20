@@ -1,28 +1,23 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "amd",
-        "moduleResolution": "node",
-        "outFile": "./public/index.js",
-        "noImplicitAny": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "noEmitOnError": true,
-        "baseUrl": ".",
-        "jsx": "react",
-        "jsxFactory": "JSX.createElement",
-        "paths": {
-            "@/*": ["./src/*"]
-        },
-        "lib": ["esnext", "dom"],
-        "esModuleInterop": true
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "amd",
+    "moduleResolution": "node",
+    "outFile": "./public/index.js",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "noEmitOnError": true,
+    "baseUrl": ".",
+    "jsx": "react",
+    "jsxFactory": "JSX.createElement",
+    "paths": {
+      "@/*": ["./src/*"]
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+    "lib": ["esnext", "dom"],
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

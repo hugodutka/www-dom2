@@ -1,9 +1,10 @@
-import { QuizSummary as Component } from "@/components/Quiz/Summary"
-import { exitQuiz, saveScoreNoStatsQuiz, saveScoreWithStatsQuiz } from '@/actions/quiz'
-import { connect } from "@/connector"
+import { QuizSummary as Component } from "@/components/Quiz/Summary";
+import { exitQuiz, saveScoreNoStatsQuiz, saveScoreWithStatsQuiz } from "@/actions/quiz";
+import { connect } from "@/connector";
 
 const propMap = (
-  { quiz: { quizzes, chosenQuiz, score, userAnswers, correctAnswers } }, dispatch
+  { quiz: { quizzes, chosenQuiz, score, userAnswers, correctAnswers } },
+  dispatch
 ) => {
   const quiz = quizzes[chosenQuiz];
   return {
@@ -13,8 +14,14 @@ const propMap = (
     questionsOrder: quiz.questionsOrder,
     userAnswers: userAnswers,
     correctAnswers: correctAnswers,
-    saveScoreNoStats: () => { dispatch(saveScoreNoStatsQuiz(), true); dispatch(exitQuiz()); },
-    saveScoreWithStats: () => { dispatch(saveScoreWithStatsQuiz(), true); dispatch(exitQuiz()); },
+    saveScoreNoStats: () => {
+      dispatch(saveScoreNoStatsQuiz(), true);
+      dispatch(exitQuiz());
+    },
+    saveScoreWithStats: () => {
+      dispatch(saveScoreWithStatsQuiz(), true);
+      dispatch(exitQuiz());
+    },
     exit: () => dispatch(exitQuiz()),
   };
 };

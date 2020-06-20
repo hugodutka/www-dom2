@@ -1,5 +1,5 @@
 export interface QuizChoice {
-  title: string,
-  description: string,
-  choose(): void,
+  title: string;
+  description: string;
+  choose(): void;
 }

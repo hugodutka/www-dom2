@@ -1,12 +1,12 @@
-import { JSX } from '@/utils/relax'
-import { QuizChoice } from './types'
+import { JSX } from "@/utils/relax";
+import { QuizChoice } from "./types";
 
-export const QuizPicker = ({choices}: {choices: Array<QuizChoice>}) => (
+export const QuizPicker = ({ choices }: { choices: Array<QuizChoice> }) => (
   <div className="quiz-picker">
     <h4>Który quiz chcesz zacząć?</h4>
-    <br/>
+    <br />
     <div className="quiz-choices">
-      {choices.map(({title, description, choose}) => (
+      {choices.map(({ title, description, choose }) => (
         <div className="card">
           <div className="card-body">
             <h6 className="card-title">{title}</h6>
@@ -21,4 +21,4 @@ export const QuizPicker = ({choices}: {choices: Array<QuizChoice>}) => (
   </div>
 );
 
-export default { QuizPicker }
+export default { QuizPicker };
