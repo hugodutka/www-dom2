@@ -19,7 +19,9 @@ export const login = (dispatch: Function, username: string, password: string) =>
     dispatch(popLoading(), false);
     if (error) {
       console.log("login error", error);
-      dispatch(putFlash(FlashVariant.Danger, "Nie udało się zalogować z tymi danymi."));
+      dispatch(
+        putFlash(FlashVariant.Danger, "Nie udało się zalogować z tymi danymi. Błąd: " + error)
+      );
     } else {
       return dispatch(loginSuccess(username));
     }
