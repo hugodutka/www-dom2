@@ -1,8 +1,8 @@
 import { JSX, Component } from "@/utils/relax";
-import QuizPreview from "@/containers/Quiz/Preview";
 import QuizPicker from "@/containers/Quiz/Picker";
 import QuizQuestion from "@/containers/Quiz/Question";
 import QuizSummary from "@/containers/Quiz/Summary";
+import QuizPre from "@/containers/Quiz/Pre";
 
 export const Quiz: Component = ({
   isQuizChosen,
@@ -21,7 +21,7 @@ export const Quiz: Component = ({
         <QuizQuestion />
       )
     ) : (
-      <QuizPreview />
+      <QuizPre />
     )
   ) : (
     <QuizPicker />

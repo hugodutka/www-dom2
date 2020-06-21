@@ -10,7 +10,7 @@ export const QuizPreview: Component = ({
   start(): void;
   cancel(): void;
   pastScores: Array<{ score: number; finishedAt: number }>;
-}): HTMLElement => (
+}) => (
   <div className="quiz-preview">
     <h3>
       <span className="text-secondary">Quiz: </span>

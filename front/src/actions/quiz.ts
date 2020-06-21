@@ -1,4 +1,4 @@
-import { getQuizList } from "@/api";
+import { getQuizList, getQuizDetails } from "@/api";
 import { putFlash, FlashVariant } from "@/actions/flash";
 import { pushLoading, popLoading } from "@/actions/loading";
 import { resetState } from "@/actions";
@@ -27,6 +27,53 @@ export const loadQuizList = (dispatch: Function) => ({
       );
     } else {
       dispatch(fillQuizList(quizzes));
+    }
+  },
+});
+
+export const FILL_QUIZ_DETAILS = "FILL_QUIZ_DETAILS";
+export const fillQuizDetails = (
+  quiz: {
+    id: number;
+    title: string;
+    description: string;
+    questions: { id: number; question: string; penalty: number }[];
+  },
+  answers: { questionId: number; answer: string }[]
+) => {
+  const questionsMap = {};
+  for (const question of quiz.questions) {
+    questionsMap[question.id] = question;
+  }
+  return {
+    type: FILL_QUIZ_DETAILS,
+    quiz: {
+      ...quiz,
+      questions: questionsMap,
+      questionsOrder: quiz.questions.map(({ id }) => id),
+    },
+    answers,
+  };
+};
+
+export const LOAD_QUIZ_DETAILS = "LOAD_QUIZ_DETAILS";
+export const loadQuizDetails = (dispatch: Function, id: number) => ({
+  type: LOAD_QUIZ_DETAILS,
+  fun: async () => {
+    dispatch(pushLoading());
+    const { error, quiz, answers } = await getQuizDetails(id);
+    dispatch(popLoading(), false);
+    if (error) {
+      console.log("get quiz details error", error);
+      dispatch(resetState(), false);
+      dispatch(
+        putFlash(
+          FlashVariant.Danger,
+          "Nie udało się pobrać quizów. Logowanie powiodło się, ale spróbuj jeszcze raz."
+        )
+      );
+    } else {
+      dispatch(fillQuizDetails(quiz, answers));
     }
   },
 });

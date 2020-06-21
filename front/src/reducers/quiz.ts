@@ -2,6 +2,8 @@ import { Action, State } from "@/utils/relax";
 import {
   LOAD_QUIZ_LIST,
   FILL_QUIZ_LIST,
+  LOAD_QUIZ_DETAILS,
+  FILL_QUIZ_DETAILS,
   CHOOSE_QUIZ,
   START_QUIZ,
   FINISH_QUIZ,
@@ -11,26 +13,13 @@ import {
   SAVE_SCORE_NO_STATS_QUIZ,
   SAVE_SCORE_WITH_STATS_QUIZ,
 } from "@/actions/quiz";
-import quizzes from "@/content/quizzes";
 import { deepCopyString } from "@/utils/text";
 
 const initialState = {
   quizzesStartedLoading: false,
   quizOverviews: [],
-  quiz: null,
-  quizzes: quizzes
-    .map((quiz) => ({
-      ...quiz,
-      questions: quiz.questions.reduce((acc, question) => {
-        acc[question.id] = question;
-        return acc;
-      }, {}),
-      questionsOrder: quiz.questions.map(({ id }) => id),
-    }))
-    .reduce((acc, quiz) => {
-      acc[quiz.id] = quiz;
-      return acc;
-    }, {}),
+  quizStartedLoading: false,
+  quizzes: {},
   chosenQuiz: null,
   quizStarted: false,
   quizFinished: false,
@@ -77,10 +66,26 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         quizOverviews: action.quizzes,
       };
     }
+    case LOAD_QUIZ_DETAILS: {
+      return {
+        ...state,
+        quizStartedLoading: true,
+      };
+    }
+    case FILL_QUIZ_DETAILS: {
+      const newQuizzes = { ...state.quizzes };
+      newQuizzes[action.quiz.id] = action.quiz;
+      return {
+        ...state,
+        quizzes: newQuizzes,
+      };
+    }
     case CHOOSE_QUIZ: {
       return {
         ...state,
         chosenQuiz: action.id,
+        quizStartedLoading: false,
+        quizzes: {},
       };
     }
     case START_QUIZ: {
@@ -163,6 +168,8 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         lastQuestionSwitch: null,
         score: null,
         correctAnswers: null,
+        quizStartedLoading: false,
+        quizzes: {},
       };
     }
     default:

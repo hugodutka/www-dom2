@@ -42,3 +42,7 @@ export const changePassword = async (password: string): Promise<any> => {
 export const getQuizList = async (): Promise<any> => {
   return fetchAPI("/quiz/list", "GET", {});
 };
+
+export const getQuizDetails = async (id: number): Promise<any> => {
+  return fetchAPI(`/quiz/${id}`, "GET", {});
+};

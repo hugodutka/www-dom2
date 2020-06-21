@@ -87,9 +87,7 @@ export class Question {
 
   toObject = () => ({
     id: this.id,
-    quizId: this.quizId,
     question: this.question,
-    answer: this.answer,
     penalty: this.penalty,
   });
 }
@@ -108,8 +106,7 @@ export class Answer {
   }
 
   toObject = () => ({
-    id: this.id,
-    userId: this.userId,
+    questionId: this.questionId,
     answer: this.answer,
   });
 }
