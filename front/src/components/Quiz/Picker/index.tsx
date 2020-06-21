@@ -1,7 +1,7 @@
-import { JSX } from "@/utils/relax";
+import { JSX, Component } from "@/utils/relax";
 import { QuizChoice } from "./types";
 
-export const QuizPicker = ({ choices }: { choices: Array<QuizChoice> }) => (
+export const QuizPicker = ({ choices }: { choices: Array<QuizChoice> }): Component => (
   <div className="quiz-picker">
     <h4>Który quiz chcesz zacząć?</h4>
     <br />
@@ -20,5 +20,3 @@ export const QuizPicker = ({ choices }: { choices: Array<QuizChoice> }) => (
     </div>
   </div>
 );
-
-export default { QuizPicker };

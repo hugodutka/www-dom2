@@ -10,5 +10,3 @@ export const rootReducer = combineReducers(
   ["flash", flash],
   ["loading", loading]
 );
-
-export default { rootReducer };

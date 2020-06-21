@@ -152,5 +152,3 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
       return state;
   }
 };
-
-export default { quiz };

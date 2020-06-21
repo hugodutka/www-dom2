@@ -1,8 +1,8 @@
-import { JSX } from "@/utils/relax";
+import { JSX, Component } from "@/utils/relax";
 
 var nextId = 0;
 
-export const Timer = ({ start }: { start: number }) => {
+export const Timer = ({ start }: { start: number }): Component => {
   const id = `timer-${nextId++}`;
   const setTime = () => {
     const timer = document.getElementById(id);
@@ -16,5 +16,3 @@ export const Timer = ({ start }: { start: number }) => {
     </span>
   );
 };
-
-export default { Timer };

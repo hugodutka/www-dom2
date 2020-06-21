@@ -31,5 +31,3 @@ export const auth = (state: State = initialState, action: Action = {}): State =>
     }
   }
 };
-
-export default { auth };

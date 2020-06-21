@@ -1,4 +1,4 @@
-import { JSX } from "@/utils/relax";
+import { JSX, Component } from "@/utils/relax";
 import QuizPreview from "@/containers/Quiz/Preview";
 import QuizPicker from "@/containers/Quiz/Picker";
 import QuizQuestion from "@/containers/Quiz/Question";
@@ -12,7 +12,7 @@ export const Quiz = ({
   isQuizChosen: boolean;
   isQuizStarted: boolean;
   isQuizFinished: boolean;
-}) =>
+}): Component =>
   isQuizChosen ? (
     isQuizStarted ? (
       isQuizFinished ? (
@@ -26,5 +26,3 @@ export const Quiz = ({
   ) : (
     <QuizPicker />
   );
-
-export default { Quiz };

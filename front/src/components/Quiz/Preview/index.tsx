@@ -1,5 +1,4 @@
-import { JSX } from "@/utils/relax";
-import { Component } from "@/utils/relax";
+import { JSX, Component } from "@/utils/relax";
 
 export const QuizPreview: Component = ({
   quiz: { title = "", description = "" },
@@ -55,5 +54,3 @@ export const QuizPreview: Component = ({
     )}
   </div>
 );
-
-export default { QuizPreview };

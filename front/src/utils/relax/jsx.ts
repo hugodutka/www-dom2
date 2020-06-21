@@ -24,5 +24,3 @@ export const JSX = {
     return elem;
   },
 };
-
-export default { JSX };

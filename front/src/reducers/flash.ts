@@ -23,5 +23,3 @@ export const flash = (state: State = initialState, action: Action = {}): State =
     }
   }
 };
-
-export default { flash };

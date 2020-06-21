@@ -1,4 +1,4 @@
-import { JSX } from "@/utils/relax";
+import { JSX, Component } from "@/utils/relax";
 
 export const QuizSummary = ({
   quiz: { title, description },
@@ -20,7 +20,7 @@ export const QuizSummary = ({
   saveScoreNoStats(): void;
   saveScoreWithStats(): void;
   exit(): void;
-}) => (
+}): Component => (
   <div className="quiz-question">
     <div className="quiz-question-header">
       <h3>
@@ -69,5 +69,3 @@ export const QuizSummary = ({
     </div>
   </div>
 );
-
-export default { QuizSummary };
