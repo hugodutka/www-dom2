@@ -5,12 +5,12 @@ export const Header: Component = ({
   isLoggedIn,
   username,
   logout,
-  toggleChangePassword,
+  showPasswordChangeForm,
 }: {
   isLoggedIn: boolean;
   username: string;
   logout(): void;
-  toggleChangePassword(): void;
+  showPasswordChangeForm(): void;
 }) => (
   <header>
     <b className="header-title">Quizy</b>
@@ -19,7 +19,7 @@ export const Header: Component = ({
         <div className="username">
           😀&nbsp;<b>{username}</b>
         </div>
-        <button className="btn btn-light" onmousedown={toggleChangePassword}>
+        <button className="btn btn-light" onmousedown={showPasswordChangeForm}>
           Zmień hasło
         </button>
         <button className="btn btn-secondary" onmousedown={logout}>

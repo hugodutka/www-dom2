@@ -1,6 +1,6 @@
 import { JSX } from "@/utils/relax";
-import { ChangePasswordForm } from "@/components/Auth/ChangePasswordForm";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import ChangePasswordForm from "@/containers/Auth/ChangePasswordForm";
 import LoginForm from "@/containers/Auth/LoginForm";
 import Quiz from "@/containers/Quiz";
 import Header from "@/containers/Header";

@@ -37,6 +37,7 @@ export const combineReducers = (...reducers: Array<[string, Reducer]>): Reducer 
   state: State,
   action: Action
 ): State => {
+  if (action && action.type === "RESET_STATE") state = undefined;
   var result = {};
   for (const [name, r] of reducers) {
     result[name] = r(state && state[name], action);

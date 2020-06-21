@@ -30,3 +30,7 @@ export const fetchAPI = async (endpoint: string, method: string, data: any): Pro
 export const login = async (username: string, password: string): Promise<any> => {
   return fetchAPI("/auth/login", "POST", { username, password });
 };
+
+export const changePassword = async (password: string): Promise<any> => {
+  return fetchAPI("/auth/changePassword", "POST", { password });
+};

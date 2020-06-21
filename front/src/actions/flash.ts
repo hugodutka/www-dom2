@@ -4,6 +4,7 @@ export enum FlashVariant {
   Danger = "danger",
   Warning = "warning",
   Info = "info",
+  Success = "success",
 }
 
 export const PUT_FLASH = "PUT_FLASH";
