@@ -26,6 +26,10 @@ router.get(
     if (!quiz) throw { status: 404, message: "quiz not found" };
     const answers = await quiz.listAnswers(res.locals.db, res.locals.user.id);
     await commitTransaction(res.locals.db);
+    if (!req.session.quizGetTimes) {
+      req.session.quizGetTimes = {};
+    }
+    req.session.quizGetTimes[quiz.id] = Date.now();
     return res.json({ quiz: quiz.toObject(), answers: answers.map((a) => a.toObject()) });
   })
 );
@@ -37,10 +41,26 @@ router.post(
     await beginTransaction(res.locals.db, true);
     const quiz = await Quiz.getById(res.locals.db, req.params.quizId);
     if (!quiz) throw { status: 404, message: "quiz not found" };
+    const quizGetTimes = req.session.quizGetTimes;
+    if (!quizGetTimes || !quizGetTimes[quiz.id])
+      throw { status: 400, message: "quiz not served before" };
     var answers;
     try {
+      var timeSum = 0;
+      for (const { timeFraction } of req.body.answers) {
+        timeSum += Number(timeFraction);
+      }
+      if (Math.abs(timeSum - 100) > 0.01) throw new Error("time fractions do not sum to 100");
+      const timeDelta = Date.now() - quizGetTimes[quiz.id];
       answers = req.body.answers.map(
-        ({ questionId, answer }) => new Answer(0, res.locals.user.id, questionId, answer, 1000)
+        ({ questionId, answer, timeFraction }) =>
+          new Answer(
+            0,
+            res.locals.user.id,
+            questionId,
+            answer,
+            Math.round((timeFraction / 100) * timeDelta)
+          )
       );
     } catch (err) {
       throw { status: 400, message: `invalid payload: ${err.message}` };

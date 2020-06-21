@@ -7,6 +7,7 @@ import {
   CHOOSE_QUIZ,
   START_QUIZ,
   FINISH_QUIZ,
+  SOLVE_QUIZ,
   EXIT_QUIZ,
   CHOOSE_QUESTION_QUIZ,
   INPUT_ANSWER_QUIZ,
@@ -27,6 +28,7 @@ const initialState = {
   questionTimes: null,
   chosenQuestion: null,
   lastQuestionSwitch: null,
+  quizAnswersSent: false,
 };
 
 export const quiz = (state: State = initialState, action: Action = {}): State => {
@@ -109,7 +111,14 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         ...state,
         quizFinished: true,
         quizFinishedAt: now,
+        quizAnswersSent: false,
         questionTimes,
+      };
+    }
+    case SOLVE_QUIZ: {
+      return {
+        ...state,
+        quizAnswersSent: true,
       };
     }
     case EXIT_QUIZ: {
@@ -126,6 +135,7 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         lastQuestionSwitch: null,
         quizStartedLoading: false,
         quizzesStartedLoading: false,
+        quizAnswersSent: false,
       };
     }
     default:
