@@ -40,7 +40,7 @@ router.post(
     var answers;
     try {
       answers = req.body.answers.map(
-        ({ questionId, answer }) => new Answer(0, res.locals.user.id, questionId, answer)
+        ({ questionId, answer }) => new Answer(0, res.locals.user.id, questionId, answer, 1000)
       );
     } catch (err) {
       throw { status: 400, message: `invalid payload: ${err.message}` };

@@ -97,10 +97,12 @@ export const answerDefinitions = [
     userId: 1,
     questionId: 9,
     answer: "5",
+    time: 2500,
   },
   {
     userId: 1,
     questionId: 10,
     answer: "4",
+    time: 7000,
   },
 ];

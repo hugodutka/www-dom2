@@ -78,6 +78,7 @@ export const setupDB = async (db) => {
       userId integer NOT NULL,
       questionId integer NOT NULL,
       answer text NOT NULL,
+      time integer NOT NULL,
 
       UNIQUE (userId, questionId),
       FOREIGN KEY (userId) REFERENCES user(id),
@@ -112,12 +113,13 @@ export const setupDB = async (db) => {
       await hashPassword(password)
     );
   }
-  for (const { userId, questionId, answer } of answerDefinitions) {
+  for (const { userId, questionId, answer, time } of answerDefinitions) {
     await run(db)(
-      "INSERT INTO userAnswer (userId, questionId, answer) VALUES (?, ?, ?)",
+      "INSERT INTO userAnswer (userId, questionId, answer, time) VALUES (?, ?, ?, ?)",
       userId,
       questionId,
-      answer
+      answer,
+      time
     );
   }
   await run(db)("COMMIT TRANSACTION;");

@@ -2,11 +2,7 @@ import { QuizQuestion as Component } from "@/components/Quiz/Question";
 import { finishQuiz, exitQuiz, chooseQuestionQuiz, inputAnswerQuiz } from "@/actions/quiz";
 import { connect } from "@/connector";
 
-const propMap = (
-  { quiz: { quizzes, chosenQuiz, chosenQuestion, quizStartedAt, userAnswers } },
-  dispatch
-) => {
-  const quiz = quizzes[chosenQuiz];
+const propMap = ({ quiz: { quiz, chosenQuestion, quizStartedAt, userAnswers } }, dispatch) => {
   const question = quiz.questions[chosenQuestion];
   const questionIndex = quiz.questionsOrder.indexOf(chosenQuestion);
   const numberOfQuestions = quiz.questionsOrder.length;

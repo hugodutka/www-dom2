@@ -1,27 +1,22 @@
 import { QuizSummary as Component } from "@/components/Quiz/Summary";
-import { exitQuiz, saveScoreNoStatsQuiz, saveScoreWithStatsQuiz } from "@/actions/quiz";
+import { exitQuiz } from "@/actions/quiz";
 import { connect } from "@/connector";
 
-const propMap = (
-  { quiz: { quizzes, chosenQuiz, score, userAnswers, correctAnswers } },
-  dispatch
-) => {
-  const quiz = quizzes[chosenQuiz];
+const propMap = ({ quiz: { quiz } }, dispatch) => {
+  const { questions, questionsOrder, userAnswers } = quiz;
+  const correctAnswers = questionsOrder.reduce((acc, id) => {
+    acc[id] = userAnswers[id].answer === questions[id].answer;
+    return acc;
+  }, {});
   return {
     quiz,
-    score,
-    questions: quiz.questions,
-    questionsOrder: quiz.questionsOrder,
-    userAnswers: userAnswers,
-    correctAnswers: correctAnswers,
-    saveScoreNoStats: () => {
-      dispatch(saveScoreNoStatsQuiz(), true);
-      dispatch(exitQuiz());
-    },
-    saveScoreWithStats: () => {
-      dispatch(saveScoreWithStatsQuiz(), true);
-      dispatch(exitQuiz());
-    },
+    questionsOrder,
+    questions,
+    userAnswers,
+    correctAnswers,
+    score: Object.entries(correctAnswers)
+      .map(([id, correct]) => userAnswers[id].time / 1000 + (correct ? 0 : questions[id].penalty))
+      .reduce((acc, val) => acc + val, 0),
     exit: () => dispatch(exitQuiz()),
   };
 };

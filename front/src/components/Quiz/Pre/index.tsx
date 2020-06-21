@@ -1,16 +1,19 @@
 import { JSX, Component } from "@/utils/relax";
-import QuizPreview from "@/containers/Quiz/Preview";
+import QuizSummary from "@/containers/Quiz/Summary";
+import QuizQuestion from "@/containers/Quiz/Question";
 import { LoadingScreen } from "@/components/LoadingScreen";
 
 export const QuizPre: Component = ({
   quizStartedLoading,
-  quizLoaded,
+  quizStarted,
+  quizSolved,
   loadQuizDetails,
 }: {
   quizStartedLoading: boolean;
-  quizLoaded: boolean;
+  quizStarted: boolean;
+  quizSolved: boolean;
   loadQuizDetails(): void;
 }) => {
   if (!quizStartedLoading) loadQuizDetails();
-  return quizLoaded ? <QuizPreview /> : <LoadingScreen />;
+  return quizStarted ? quizSolved ? <QuizSummary /> : <QuizQuestion /> : <LoadingScreen />;
 };

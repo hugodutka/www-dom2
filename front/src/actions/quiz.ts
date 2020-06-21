@@ -39,11 +39,15 @@ export const fillQuizDetails = (
     description: string;
     questions: { id: number; question: string; penalty: number }[];
   },
-  answers: { questionId: number; answer: string }[]
+  answers: { questionId: number; answer: string; time: number }[]
 ) => {
   const questionsMap = {};
   for (const question of quiz.questions) {
     questionsMap[question.id] = question;
+  }
+  const answersMap = {};
+  for (const answer of answers) {
+    answersMap[answer.questionId] = answer;
   }
   return {
     type: FILL_QUIZ_DETAILS,
@@ -51,8 +55,8 @@ export const fillQuizDetails = (
       ...quiz,
       questions: questionsMap,
       questionsOrder: quiz.questions.map(({ id }) => id),
+      userAnswers: answersMap,
     },
-    answers,
   };
 };
 
@@ -73,7 +77,8 @@ export const loadQuizDetails = (dispatch: Function, id: number) => ({
         )
       );
     } else {
-      dispatch(fillQuizDetails(quiz, answers));
+      dispatch(fillQuizDetails(quiz, answers), false);
+      dispatch(startQuiz());
     }
   },
 });
@@ -82,7 +87,7 @@ export const CHOOSE_QUIZ = "CHOOSE_QUIZ";
 export const chooseQuiz = (id: string | null) => ({ type: CHOOSE_QUIZ, id });
 
 export const START_QUIZ = "START_QUIZ";
-export const startQuiz = (id: string | null) => ({ type: START_QUIZ, id });
+export const startQuiz = () => ({ type: START_QUIZ });
 
 export const FINISH_QUIZ = "FINISH_QUIZ";
 export const finishQuiz = () => ({ type: FINISH_QUIZ });
@@ -95,9 +100,3 @@ export const chooseQuestionQuiz = (id: string) => ({ type: CHOOSE_QUESTION_QUIZ,
 
 export const INPUT_ANSWER_QUIZ = "INPUT_ANSWER_QUIZ";
 export const inputAnswerQuiz = (answer: string) => ({ type: INPUT_ANSWER_QUIZ, answer });
-
-export const SAVE_SCORE_NO_STATS_QUIZ = "SAVE_SCORE_NO_STATS_QUIZ";
-export const saveScoreNoStatsQuiz = () => ({ type: SAVE_SCORE_NO_STATS_QUIZ });
-
-export const SAVE_SCORE_WITH_STATS_QUIZ = "SAVE_SCORE_WITH_STATS_QUIZ";
-export const saveScoreWithStatsQuiz = () => ({ type: SAVE_SCORE_WITH_STATS_QUIZ });

@@ -40,7 +40,7 @@ export class Quiz {
 
   async listAnswers(db, userId: number): Promise<Answer[]> {
     const answers = await all(db)(
-      `SELECT a.id, a.questionId, a.answer
+      `SELECT a.id, a.questionId, a.answer, a.time
        FROM userAnswer AS a
        JOIN question AS q
        ON q.id == a.questionId
@@ -48,7 +48,7 @@ export class Quiz {
       userId,
       this.id
     );
-    return answers.map((a) => new Answer(a.id, userId, a.questionId, a.answer));
+    return answers.map((a) => new Answer(a.id, userId, a.questionId, a.answer, a.time));
   }
 
   // Must be run inside a transaction.
@@ -89,6 +89,7 @@ export class Question {
     id: this.id,
     question: this.question,
     penalty: this.penalty,
+    answer: this.answer,
   });
 }
 
@@ -97,16 +98,19 @@ export class Answer {
     public id: number,
     public userId: number,
     public questionId: number,
-    public answer: string
+    public answer: string,
+    public time: number
   ) {
     if (typeof id != "number") throw new Error("id must be a number");
     if (typeof userId != "number") throw new Error("userId must be a number");
     if (typeof questionId != "number") throw new Error("questionId must be a number");
     if (typeof answer != "string") throw new Error("answer must be a string");
+    if (typeof time != "number") throw new Error("time must be a number");
   }
 
   toObject = () => ({
     questionId: this.questionId,
     answer: this.answer,
+    time: this.time,
   });
 }

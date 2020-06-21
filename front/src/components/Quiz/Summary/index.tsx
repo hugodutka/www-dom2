@@ -7,18 +7,14 @@ export const QuizSummary: Component = ({
   questionsOrder,
   userAnswers,
   correctAnswers,
-  saveScoreNoStats,
-  saveScoreWithStats,
   exit,
 }: {
   quiz: { title: string; description: string };
   score: number;
-  questions: { [id: string]: { [question: string]: string } };
-  questionsOrder: Array<string>;
-  userAnswers: { [id: string]: string };
-  correctAnswers: { [id: string]: boolean };
-  saveScoreNoStats(): void;
-  saveScoreWithStats(): void;
+  questions: { [id: number]: { [question: string]: string } };
+  questionsOrder: Array<number>;
+  userAnswers: { [id: number]: { answer: string; time: number } };
+  correctAnswers: { [id: number]: boolean };
   exit(): void;
 }) => (
   <div className="quiz-question">
@@ -37,7 +33,7 @@ export const QuizSummary: Component = ({
       <span className="text-secondary">{description}</span>
     </h5>
     <hr />
-    <h4>Twój wynik: {score / 1000} sek.</h4>
+    <h4>Twój wynik: {score.toFixed(2)} sek.</h4>
     <br />
     {questionsOrder.map((id, idx) => (
       <div>
@@ -50,22 +46,16 @@ export const QuizSummary: Component = ({
         </h5>
         <div>{questions[id].question}</div>
         <div className="text-secondary">
-          Twoja odpowiedź: <b>{userAnswers[id]}</b>
+          Twoja odpowiedź: <b>{userAnswers[id].answer}</b>
         </div>
         <div className="text-secondary">
           Odpowiedź poprawna: <b>{questions[id].answer}</b>
         </div>
+        <div className="text-secondary">
+          Czas: <b>{(userAnswers[id].time / 1000).toFixed(2)} sek.</b>
+        </div>
         <br />
       </div>
     ))}
-    <hr />
-    <div className="quiz-summary-btn-container">
-      <button className="btn btn-success" onmousedown={saveScoreNoStats}>
-        Zapisz wynik bez statystyk
-      </button>
-      <button className="btn btn-success" onmousedown={saveScoreWithStats}>
-        Zapisz wynik ze statystykami
-      </button>
-    </div>
   </div>
 );
