@@ -4,7 +4,7 @@ import QuizPicker from "@/containers/Quiz/Picker";
 import QuizQuestion from "@/containers/Quiz/Question";
 import QuizSummary from "@/containers/Quiz/Summary";
 
-export const Quiz = ({
+export const Quiz: Component = ({
   isQuizChosen,
   isQuizStarted,
   isQuizFinished,
@@ -12,7 +12,7 @@ export const Quiz = ({
   isQuizChosen: boolean;
   isQuizStarted: boolean;
   isQuizFinished: boolean;
-}): Component =>
+}) =>
   isQuizChosen ? (
     isQuizStarted ? (
       isQuizFinished ? (

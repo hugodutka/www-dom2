@@ -2,7 +2,7 @@ import { JSX, Component } from "@/utils/relax";
 import { Timer } from "@/components/Timer";
 import { isPositiveInteger } from "@/utils/text";
 
-export const QuizQuestion = ({
+export const QuizQuestion: Component = ({
   quiz: { title, description },
   question,
   penalty,
@@ -30,7 +30,7 @@ export const QuizQuestion = ({
   previous(): void;
   finish(): void;
   exit(): void;
-}): Component => (
+}) => (
   <div className="quiz-question">
     <div className="quiz-question-header">
       <h3>

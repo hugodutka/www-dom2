@@ -2,7 +2,7 @@ import { JSX, Component } from "@/utils/relax";
 
 var nextId = 0;
 
-export const Timer = ({ start }: { start: number }): Component => {
+export const Timer: Component = ({ start }: { start: number }) => {
   const id = `timer-${nextId++}`;
   const setTime = () => {
     const timer = document.getElementById(id);

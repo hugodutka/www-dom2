@@ -1,3 +1,36 @@
+import { getQuizList } from "@/api";
+import { putFlash, FlashVariant } from "@/actions/flash";
+import { pushLoading, popLoading } from "@/actions/loading";
+import { resetState } from "@/actions";
+
+export const FILL_QUIZ_LIST = "FILL_QUIZ_LIST";
+export const fillQuizList = (quizzes: { id: number; title: string; description: string }[]) => ({
+  type: FILL_QUIZ_LIST,
+  quizzes: [...quizzes].sort((a, b) => a.title.localeCompare(b.title)),
+});
+
+export const LOAD_QUIZ_LIST = "LOAD_QUIZ_LIST";
+export const loadQuizList = (dispatch: Function) => ({
+  type: LOAD_QUIZ_LIST,
+  fun: async () => {
+    dispatch(pushLoading());
+    const { error, quizzes } = await getQuizList();
+    dispatch(popLoading(), false);
+    if (error) {
+      console.log("get quiz list error", error);
+      dispatch(resetState(), false);
+      dispatch(
+        putFlash(
+          FlashVariant.Danger,
+          "Nie udało się pobrać quizów. Logowanie powiodło się, ale spróbuj jeszcze raz."
+        )
+      );
+    } else {
+      dispatch(fillQuizList(quizzes));
+    }
+  },
+});
+
 export const CHOOSE_QUIZ = "CHOOSE_QUIZ";
 export const chooseQuiz = (id: string | null) => ({ type: CHOOSE_QUIZ, id });
 

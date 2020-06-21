@@ -1,5 +1,7 @@
 import { Action, State } from "@/utils/relax";
 import {
+  LOAD_QUIZ_LIST,
+  FILL_QUIZ_LIST,
   CHOOSE_QUIZ,
   START_QUIZ,
   FINISH_QUIZ,
@@ -13,6 +15,9 @@ import quizzes from "@/content/quizzes";
 import { deepCopyString } from "@/utils/text";
 
 const initialState = {
+  quizzesStartedLoading: false,
+  quizOverviews: [],
+  quiz: null,
   quizzes: quizzes
     .map((quiz) => ({
       ...quiz,
@@ -60,6 +65,18 @@ const saveScore = (state: State, scores: boolean): State => {
 
 export const quiz = (state: State = initialState, action: Action = {}): State => {
   switch (action.type) {
+    case LOAD_QUIZ_LIST: {
+      return {
+        ...state,
+        quizzesStartedLoading: true,
+      };
+    }
+    case FILL_QUIZ_LIST: {
+      return {
+        ...state,
+        quizOverviews: action.quizzes,
+      };
+    }
     case CHOOSE_QUIZ: {
       return {
         ...state,

@@ -38,3 +38,7 @@ export const logout = async (): Promise<any> => {
 export const changePassword = async (password: string): Promise<any> => {
   return fetchAPI("/auth/changePassword", "POST", { password });
 };
+
+export const getQuizList = async (): Promise<any> => {
+  return fetchAPI("/quiz/list", "GET", {});
+};
