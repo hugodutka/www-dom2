@@ -1,5 +1,4 @@
-import { JSX } from "@/utils/relax";
-import { Component } from "@/utils/relax";
+import { JSX, Component } from "@/utils/relax";
 
 export const Header: Component = ({
   isLoggedIn,
@@ -31,5 +30,3 @@ export const Header: Component = ({
     )}
   </header>
 );
-
-export default { Header };

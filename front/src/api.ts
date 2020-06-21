@@ -31,6 +31,10 @@ export const login = async (username: string, password: string): Promise<any> =>
   return fetchAPI("/auth/login", "POST", { username, password });
 };
 
+export const logout = async (): Promise<any> => {
+  return fetchAPI("/auth/logout", "POST", {});
+};
+
 export const changePassword = async (password: string): Promise<any> => {
   return fetchAPI("/auth/changePassword", "POST", { password });
 };

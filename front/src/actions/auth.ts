@@ -1,4 +1,8 @@
-import { login as fetchLogin, changePassword as fetchChangePassword } from "@/api";
+import {
+  login as fetchLogin,
+  changePassword as fetchChangePassword,
+  logout as fetchLogout,
+} from "@/api";
 import { putFlash, FlashVariant } from "@/actions/flash";
 import { pushLoading, popLoading } from "@/actions/loading";
 import { resetState } from "@/actions";
@@ -18,6 +22,23 @@ export const login = (dispatch: Function, username: string, password: string) =>
       dispatch(putFlash(FlashVariant.Danger, "Nie udało się zalogować z tymi danymi."));
     } else {
       return dispatch(loginSuccess(username));
+    }
+  },
+});
+
+export const LOGOUT = "LOGOUT";
+export const logout = (dispatch: Function) => ({
+  type: LOGOUT,
+  fun: async () => {
+    dispatch(pushLoading());
+    const { error } = await fetchLogout();
+    dispatch(popLoading(), false);
+    if (error) {
+      console.log("logout error", error);
+      dispatch(putFlash(FlashVariant.Danger, "Nie udało się wylogować."));
+    } else {
+      dispatch(resetState(), false);
+      dispatch(putFlash(FlashVariant.Success, "Wylogowano."));
     }
   },
 });
