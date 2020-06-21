@@ -43,6 +43,9 @@ export class Renderer implements Renderer {
     if (!noRender) {
       render(this.component, this.root);
     }
+    if (typeof action.fun === "function") {
+      action.fun();
+    }
   };
 }
 

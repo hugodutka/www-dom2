@@ -1,5 +1,6 @@
 import { JSX } from "@/utils/relax";
 import { ChangePasswordForm } from "@/components/Auth/ChangePasswordForm";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import LoginForm from "@/containers/Auth/LoginForm";
 import Quiz from "@/containers/Quiz";
 import Header from "@/containers/Header";
@@ -19,7 +20,7 @@ export const App = ({
     <Flash />
     <div className="content">
       {isLoading ? (
-        ""
+        <LoadingScreen />
       ) : isLoggedIn ? (
         showPasswordChange ? (
           <ChangePasswordForm />
@@ -32,5 +33,3 @@ export const App = ({
     </div>
   </div>
 );
-
-export default { App };
