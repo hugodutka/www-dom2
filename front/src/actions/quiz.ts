@@ -1,4 +1,4 @@
-import { getQuizList, getQuizDetails } from "@/api";
+import { getQuizList, getQuizDetails, solveQuiz as fetchSolveQuiz } from "@/api";
 import { putFlash, FlashVariant } from "@/actions/flash";
 import { pushLoading, popLoading } from "@/actions/loading";
 import { resetState } from "@/actions";
@@ -80,6 +80,26 @@ export const loadQuizDetails = (dispatch: Function, id: number) => ({
       dispatch(fillQuizDetails(quiz, answers), false);
       dispatch(startQuiz());
     }
+  },
+});
+
+export const SOLVE_QUIZ = "SOLVE_QUIZ";
+export const solveQuiz = (
+  dispatch: Function,
+  id: number,
+  answers: { questionId: number; answer: string }[]
+) => ({
+  type: SOLVE_QUIZ,
+  fun: async () => {
+    dispatch(pushLoading());
+    const { error } = await fetchSolveQuiz(id, answers);
+    if (error) {
+      console.log("get quiz details error", error);
+      dispatch(putFlash(FlashVariant.Danger, "Nie udało się ocenić quizu."));
+    } else {
+      dispatch(loadQuizDetails(dispatch, id), false);
+    }
+    dispatch(popLoading());
   },
 });
 

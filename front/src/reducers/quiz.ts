@@ -78,8 +78,8 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
         quizStartedAt: now,
         chosenQuestion: quiz.questionsOrder[0],
         lastQuestionSwitch: now,
-        userAnswers: userAnswers,
-        questionTimes: questionTimes,
+        userAnswers,
+        questionTimes,
       };
     }
     case CHOOSE_QUESTION_QUIZ: {

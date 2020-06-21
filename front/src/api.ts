@@ -46,3 +46,10 @@ export const getQuizList = async (): Promise<any> => {
 export const getQuizDetails = async (id: number): Promise<any> => {
   return fetchAPI(`/quiz/${id}`, "GET", {});
 };
+
+export const solveQuiz = async (
+  id: number,
+  answers: { questionId: number; answer: string }[]
+): Promise<any> => {
+  return fetchAPI(`/quiz/${id}/solve`, "POST", { answers });
+};

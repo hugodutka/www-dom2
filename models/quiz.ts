@@ -67,10 +67,11 @@ export class Quiz {
     }
     for (const a of answers) {
       await run(db)(
-        "REPLACE INTO userAnswer (userId, questionId, answer) VALUES (?, ?, ?)",
+        "REPLACE INTO userAnswer (userId, questionId, answer, time) VALUES (?, ?, ?, ?)",
         a.userId,
         a.questionId,
-        a.answer
+        a.answer,
+        a.time
       );
     }
   }
