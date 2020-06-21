@@ -56,12 +56,6 @@ app.use(cleanUpDB);
 
 const port = 3000;
 app.listen(port, async () => {
-  try {
-    await setupDB(newDB());
-  } catch (err) {
-    console.trace(err.stack);
-    process.exit(1);
-  }
   console.log(`Server listening at http://localhost:${port}`);
   app.emit("serverListening");
 });

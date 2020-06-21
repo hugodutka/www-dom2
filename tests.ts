@@ -145,6 +145,35 @@ describe("quiz", () => {
     expect(quiz).to.have.property("questions");
   });
 
+  it("solve post without get", async () => {
+    const { jar } = await login();
+    const r = await fetchAPI("/quiz/2/solve", "POST", jar, {
+      answers: [
+        {
+          questionId: 5,
+          answer: "5",
+          timeFraction: "25",
+        },
+        {
+          questionId: 6,
+          answer: "5",
+          timeFraction: "25",
+        },
+        {
+          questionId: 7,
+          answer: "5",
+          timeFraction: "25",
+        },
+        {
+          questionId: 8,
+          answer: "5",
+          timeFraction: "25",
+        },
+      ],
+    });
+    assert.equal(r.status, 400);
+  });
+
   it("solve with not enough answers", async () => {
     const { jar } = await login();
     const r = await fetchAPI("/quiz/2/solve", "POST", jar, {
@@ -160,29 +189,39 @@ describe("quiz", () => {
 
   it("solve", async () => {
     const { jar } = await login();
+    const pre = await fetchAPI("/quiz/2", "GET", jar);
+    assert.equal(pre.status, 200);
     const r = await fetchAPI("/quiz/2/solve", "POST", jar, {
       answers: [
         {
           questionId: 5,
           answer: "5",
+          timeFraction: "25",
         },
         {
           questionId: 6,
           answer: "5",
+          timeFraction: "25",
         },
         {
           questionId: 7,
           answer: "5",
+          timeFraction: "25",
         },
         {
           questionId: 8,
           answer: "5",
+          timeFraction: "25",
         },
       ],
     });
-    assert.equal(r.status, 200);
     const body = await r.json();
+    assert.equal(r.status, 200);
     assert.isTrue(body.ok);
+    const post = await fetchAPI("/quiz/2", "GET", jar);
+    const postBody = await post.json();
+    const { answers } = postBody;
+    assert.isTrue(answers.every(({ time }) => Number.isInteger(time) && time === answers[0].time));
   });
 
   it("multiple solves not allowed", async () => {
@@ -190,21 +229,27 @@ describe("quiz", () => {
       {
         questionId: 1,
         answer: "5",
+        timeFraction: "25",
       },
       {
         questionId: 2,
         answer: "5",
+        timeFraction: "25",
       },
       {
         questionId: 3,
         answer: "5",
+        timeFraction: "25",
       },
       {
         questionId: 4,
         answer: "5",
+        timeFraction: "25",
       },
     ];
     const { jar } = await login();
+    const pre = await fetchAPI("/quiz/1", "GET", jar);
+    assert.equal(pre.status, 200);
     const r = await fetchAPI("/quiz/1/solve", "POST", jar, { answers });
     assert.equal(r.status, 200);
     const r2 = await fetchAPI("/quiz/1/solve", "POST", jar, { answers });

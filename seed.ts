@@ -6,6 +6,16 @@ export const userDefinitions = [
     username: "hugo",
     password: "password",
   },
+  {
+    id: 2,
+    username: "user1",
+    password: "user1",
+  },
+  {
+    id: 3,
+    username: "user2",
+    password: "user2",
+  },
 ];
 
 export const quizDefinitions = [

@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "npx mocha -r ts-node/register tests.ts --exit",
-    "start": "npx ts-node app.ts"
+    "start": "npx ts-node app.ts",
+    "createdb": "npx ts-node setupdb.ts",
+    "install": "npm install && cd front && npm install",
+    "build": "cd front && npm run-script build"
   },
   "repository": {
     "type": "git",
