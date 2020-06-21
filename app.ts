@@ -7,7 +7,6 @@ import { authRouter } from "./routes/auth";
 import { quizRouter } from "./routes/quiz";
 import { provideDB, cleanUpDB, putCSRFTokenInCookies } from "./middleware";
 import { sessionSecret } from "./config";
-import { setupDB, newDB } from "./db";
 
 const app = express();
 
@@ -56,6 +55,7 @@ app.use(cleanUpDB);
 
 const port = 3000;
 app.listen(port, async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   console.log(`Server listening at http://localhost:${port}`);
   app.emit("serverListening");
 });

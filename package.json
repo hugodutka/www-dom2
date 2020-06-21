@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx mocha -r ts-node/register tests.ts --exit",
-    "start": "npx ts-node app.ts",
     "createdb": "npx ts-node setupdb.ts",
+    "test": "npm run-script createdb && npx mocha -r ts-node/register tests.ts --exit --timeout 5000",
+    "start": "npx ts-node app.ts",
     "install": "npm install && cd front && npm install",
     "build": "cd front && npm run-script build"
   },
