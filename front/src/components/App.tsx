@@ -3,6 +3,7 @@ import { ChangePasswordForm } from "@/components/Auth/ChangePasswordForm";
 import LoginForm from "@/containers/Auth/LoginForm";
 import Quiz from "@/containers/Quiz";
 import Header from "@/containers/Header";
+import Flash from "@/containers/Flash";
 
 export const App = ({
   isLoading,
@@ -15,6 +16,7 @@ export const App = ({
 }) => (
   <div className="app">
     <Header />
+    <Flash />
     <div className="content">
       {isLoading ? (
         ""

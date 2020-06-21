@@ -1,5 +1,6 @@
 :root {
   --margin-width: 1rem;
+  --content-bg-color: #f8f9fa;
 }
 
 body,
@@ -51,7 +52,7 @@ header {
   justify-content: center;
   align-items: center;
   width: 100%;
-  background-color: #f8f9fa;
+  background-color: var(--content-bg-color);
 }
 
 .content > * {
@@ -105,4 +106,20 @@ header {
 
 .password-change-form-btn {
   width: 100%;
+}
+
+.flash-alerts {
+  background-color: var(--content-bg-color);
+}
+
+.flash-alert {
+  margin-left: var(--margin-width);
+  margin-right: var(--margin-width);
+  margin-top: var(--margin-width);
+}
+
+.btn-flash {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
 }
