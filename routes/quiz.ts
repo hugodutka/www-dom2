@@ -25,12 +25,19 @@ router.get(
     const quiz = await Quiz.getById(res.locals.db, req.params.quizId);
     if (!quiz) throw { status: 404, message: "quiz not found" };
     const answers = await quiz.listAnswers(res.locals.db, res.locals.user.id);
+    const topScores = await quiz.getTopScores(res.locals.db, 3);
+    const answerStats = await quiz.getAnswerStats(res.locals.db);
     await commitTransaction(res.locals.db);
     if (!req.session.quizGetTimes) {
       req.session.quizGetTimes = {};
     }
     req.session.quizGetTimes[quiz.id] = Date.now();
-    return res.json({ quiz: quiz.toObject(), answers: answers.map((a) => a.toObject()) });
+    return res.json({
+      quiz: quiz.toObject(),
+      answers: answers.map((a) => a.toObject()),
+      topScores,
+      answerStats,
+    });
   })
 );
 

@@ -1,7 +1,7 @@
 const { Database } = require("sqlite3");
 const { promisify } = require("util");
 const { hashPassword } = require("./auth");
-import { userDefinitions, quizDefinitions, answerDefinitions } from "./seed";
+import { userDefinitions, quizDefinitions, answerDefinitions, scoreDefinitions } from "./seed";
 
 export const newDB = () => new Database("db.sqlite");
 const retry = (f: Function, maxTries: number) => async (...args) => {
@@ -44,6 +44,7 @@ export const setupDB = async (db) => {
   await run(db)("DROP TABLE IF EXISTS quiz;");
   await run(db)("DROP TABLE IF EXISTS question;");
   await run(db)("DROP TABLE IF EXISTS userAnswer;");
+  await run(db)("DROP TABLE IF EXISTS userScore;");
   await run(db)(`
     CREATE TABLE IF NOT EXISTS user (
       id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -79,10 +80,23 @@ export const setupDB = async (db) => {
       questionId integer NOT NULL,
       answer text NOT NULL,
       time integer NOT NULL,
+      correct boolean NOT NULL,
 
       UNIQUE (userId, questionId),
       FOREIGN KEY (userId) REFERENCES user(id),
       FOREIGN KEY (questionId) REFERENCES question(id)
+    );
+  `);
+  await run(db)(`
+    CREATE TABLE IF NOT EXISTS userScore (
+      id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+      userId integer NOT NULL,
+      quizId integer NOT NULL,
+      score integer NOT NULL,
+
+      UNIQUE (userId, quizId),
+      FOREIGN KEY (userId) REFERENCES user(id),
+      FOREIGN KEY (quizId) REFERENCES quiz(id)
     );
   `);
   for (const { id, title, description, questions } of quizDefinitions) {
@@ -113,13 +127,22 @@ export const setupDB = async (db) => {
       await hashPassword(password)
     );
   }
-  for (const { userId, questionId, answer, time } of answerDefinitions) {
+  for (const { userId, questionId, answer, time, correct } of answerDefinitions) {
     await run(db)(
-      "INSERT INTO userAnswer (userId, questionId, answer, time) VALUES (?, ?, ?, ?)",
+      "INSERT INTO userAnswer (userId, questionId, answer, time, correct) VALUES (?, ?, ?, ?, ?)",
       userId,
       questionId,
       answer,
-      time
+      time,
+      correct
+    );
+  }
+  for (const { userId, quizId, score } of scoreDefinitions) {
+    await run(db)(
+      "INSERT INTO userScore (userId, quizId, score) VALUES (?, ?, ?)",
+      userId,
+      quizId,
+      score
     );
   }
   await run(db)("COMMIT TRANSACTION;");

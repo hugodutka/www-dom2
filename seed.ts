@@ -108,11 +108,21 @@ export const answerDefinitions = [
     questionId: 9,
     answer: "5",
     time: 2500,
+    correct: true,
   },
   {
     userId: 1,
     questionId: 10,
     answer: "4",
     time: 7000,
+    correct: false,
+  },
+];
+
+export const scoreDefinitions = [
+  {
+    userId: 1,
+    quizId: 3,
+    score: 2500 + 7000 + 87342372987438000,
   },
 ];

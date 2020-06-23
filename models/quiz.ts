@@ -40,7 +40,7 @@ export class Quiz {
 
   async listAnswers(db, userId: number): Promise<Answer[]> {
     const answers = await all(db)(
-      `SELECT a.id, a.questionId, a.answer, a.time
+      `SELECT a.id, a.questionId, a.answer, a.time, a.correct
        FROM userAnswer AS a
        JOIN question AS q
        ON q.id == a.questionId
@@ -48,7 +48,44 @@ export class Quiz {
       userId,
       this.id
     );
-    return answers.map((a) => new Answer(a.id, userId, a.questionId, a.answer, a.time));
+    return answers.map(
+      (a) => new Answer(a.id, userId, a.questionId, a.answer, a.time, Boolean(a.correct))
+    );
+  }
+
+  async getTopScores(db, limit: number = 3): Promise<{ username: string; score: number }[]> {
+    return await all(db)(
+      `SELECT u.username, s.score
+       FROM userScore AS s
+       JOIN user AS u
+       ON u.id == s.userId
+       WHERE s.quizId = ?
+       ORDER BY s.score ASC
+       LIMIT ?;`,
+      this.id,
+      limit
+    );
+  }
+
+  async getAnswerStats(db): Promise<{ questionId: number; avgCorrectTimeInMs: number }[]> {
+    return await all(db)(
+      `SELECT questionId, AVG(time)
+      FROM userAnswer
+      WHERE correct = 1 AND questionId IN (
+        SELECT question.id
+        FROM question
+        JOIN quiz
+        ON quiz.id = question.quizId
+        WHERE quiz.id = ?
+      )
+      GROUP BY questionId;`,
+      this.id
+    ).then((results) =>
+      results.map((r) => ({
+        questionId: Number(r.questionId),
+        avgCorrectTimeInMs: Number(r["AVG(time)"]),
+      }))
+    );
   }
 
   // Must be run inside a transaction.
@@ -57,23 +94,44 @@ export class Quiz {
     if (prevAnswers.length !== 0) {
       return new Error("a quiz can only be solved once");
     }
-    const answeredIds = answers.map((a) => a.questionId).sort();
-    const questionIds = this.questions.map((q) => q.id).sort();
+
+    const questionsMap = this.questions.reduce((acc, q) => {
+      acc.set(q.id, q);
+      return acc;
+    }, new Map());
+
     if (
-      answeredIds.length !== questionIds.length ||
-      !answeredIds.every((val, i) => val === questionIds[i])
+      questionsMap.size !== answers.length ||
+      !answers.every((ans) => Boolean(questionsMap.get(ans.questionId)))
     ) {
       return new Error("all questions must be answered exactly once");
     }
+
+    var score = 0;
+    for (const a of answers) {
+      const question = questionsMap.get(a.questionId);
+      a.correct = a.answer === question.answer;
+      score += a.time + (a.correct ? 0 : question.penalty * 1000);
+    }
+
     for (const a of answers) {
       await run(db)(
-        "REPLACE INTO userAnswer (userId, questionId, answer, time) VALUES (?, ?, ?, ?)",
+        `INSERT INTO userAnswer (userId, questionId, answer, time, correct)
+         VALUES (?, ?, ?, ?, ?)`,
         a.userId,
         a.questionId,
         a.answer,
-        a.time
+        a.time,
+        a.correct
       );
     }
+
+    await run(db)(
+      "INSERT INTO userScore (userId, quizId, score) VALUES (?, ?, ?)",
+      userId,
+      this.id,
+      score
+    );
   }
 }
 
@@ -100,13 +158,15 @@ export class Answer {
     public userId: number,
     public questionId: number,
     public answer: string,
-    public time: number
+    public time: number,
+    public correct: boolean = false
   ) {
     if (typeof id != "number") throw new Error("id must be a number");
     if (typeof userId != "number") throw new Error("userId must be a number");
     if (typeof questionId != "number") throw new Error("questionId must be a number");
     if (typeof answer != "string") throw new Error("answer must be a string");
     if (typeof time != "number") throw new Error("time must be a number");
+    if (typeof correct != "boolean") throw new Error("correct must be a boolean");
   }
 
   toObject = () => ({
