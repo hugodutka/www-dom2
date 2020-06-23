@@ -25,6 +25,9 @@ const initialState = {
   quizStartedAt: null,
   quizFinishedAt: null,
   userAnswers: null,
+  topScores: null,
+  answerStats: null,
+  score: null,
   questionTimes: null,
   chosenQuestion: null,
   lastQuestionSwitch: null,
@@ -55,6 +58,9 @@ export const quiz = (state: State = initialState, action: Action = {}): State =>
       return {
         ...state,
         quiz: action.quiz,
+        topScores: action.topScores,
+        answerStats: action.answerStats,
+        score: action.score,
       };
     }
     case CHOOSE_QUIZ: {

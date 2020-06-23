@@ -39,7 +39,10 @@ export const fillQuizDetails = (
     description: string;
     questions: { id: number; question: string; penalty: number }[];
   },
-  answers: { questionId: number; answer: string; time: number }[]
+  answers: { questionId: number; answer: string; time: number }[],
+  topScores: { username: string; score: number }[],
+  answerStats: { questionId: number; avgCorrectTimeInMs: number }[],
+  score: number
 ) => {
   const questionsMap = {};
   for (const question of quiz.questions) {
@@ -49,6 +52,10 @@ export const fillQuizDetails = (
   for (const answer of answers) {
     answersMap[answer.questionId] = answer;
   }
+  const answerStatsMap = {};
+  for (const stats of answerStats) {
+    answerStatsMap[stats.questionId] = stats;
+  }
   return {
     type: FILL_QUIZ_DETAILS,
     quiz: {
@@ -57,6 +64,9 @@ export const fillQuizDetails = (
       questionsOrder: quiz.questions.map(({ id }) => id),
       userAnswers: answersMap,
     },
+    topScores,
+    score,
+    answerStats: answerStatsMap,
   };
 };
 
@@ -65,7 +75,7 @@ export const loadQuizDetails = (dispatch: Function, id: number) => ({
   type: LOAD_QUIZ_DETAILS,
   fun: async () => {
     dispatch(pushLoading());
-    const { error, quiz, answers } = await getQuizDetails(id);
+    const { error, quiz, answers, topScores, answerStats, score } = await getQuizDetails(id);
     dispatch(popLoading(), false);
     if (error) {
       console.log("get quiz details error", error);
@@ -77,7 +87,7 @@ export const loadQuizDetails = (dispatch: Function, id: number) => ({
         )
       );
     } else {
-      dispatch(fillQuizDetails(quiz, answers), false);
+      dispatch(fillQuizDetails(quiz, answers, topScores, answerStats, score), false);
       dispatch(startQuiz());
     }
   },

@@ -123,6 +123,6 @@ export const scoreDefinitions = [
   {
     userId: 1,
     quizId: 3,
-    score: 2500 + 7000 + 87342372987438000,
+    score: Math.round((2500 + 7000) / 1000 + 87342372987438),
   },
 ];

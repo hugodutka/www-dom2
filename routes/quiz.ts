@@ -27,6 +27,7 @@ router.get(
     const answers = await quiz.listAnswers(res.locals.db, res.locals.user.id);
     const topScores = await quiz.getTopScores(res.locals.db, 3);
     const answerStats = await quiz.getAnswerStats(res.locals.db);
+    const score = await quiz.getScore(res.locals.db, res.locals.user.id);
     await commitTransaction(res.locals.db);
     if (!req.session.quizGetTimes) {
       req.session.quizGetTimes = {};
@@ -37,6 +38,7 @@ router.get(
       answers: answers.map((a) => a.toObject()),
       topScores,
       answerStats,
+      score,
     });
   })
 );

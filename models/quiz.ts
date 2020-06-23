@@ -53,6 +53,12 @@ export class Quiz {
     );
   }
 
+  async getScore(db, userId: number): Promise<number | null> {
+    return await get(db)("SELECT score FROM userScore WHERE userId = ?", userId)
+      .then(({ score }) => Number(score))
+      .catch((err) => null);
+  }
+
   async getTopScores(db, limit: number = 3): Promise<{ username: string; score: number }[]> {
     return await all(db)(
       `SELECT u.username, s.score
@@ -111,8 +117,9 @@ export class Quiz {
     for (const a of answers) {
       const question = questionsMap.get(a.questionId);
       a.correct = a.answer === question.answer;
-      score += a.time + (a.correct ? 0 : question.penalty * 1000);
+      score += a.time / 1000 + (a.correct ? 0 : question.penalty);
     }
+    score = Math.round(score);
 
     for (const a of answers) {
       await run(db)(
@@ -173,5 +180,6 @@ export class Answer {
     questionId: this.questionId,
     answer: this.answer,
     time: this.time,
+    correct: this.correct,
   });
 }
